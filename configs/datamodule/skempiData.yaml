@@ -1,0 +1,19 @@
+_target_: src.datamodules.skempi_datamodule.SkempiDataModule
+
+task: 'skempi'
+data_dir: ${paths.data_dir}
+pdb_filename: "skempi_pdbs"
+meta_filename: "skempi_v2.csv"
+block_list: ['1KBH']
+model_data_cache_dir: "dataset_cache"
+force_process_data: False
+cache_processed_data: True
+
+use_esm: False
+num_cvfolds: 3
+cvfold_index: 0
+split_seed: 2024
+
+batch_size: 2
+num_workers: 8
+pin_memory: False
