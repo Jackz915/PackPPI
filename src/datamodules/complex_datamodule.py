@@ -215,7 +215,7 @@ def collate_fn(protein_batch):
         BB_D_sincos=torch.stack([_maybe_pad(protein, "BB_D_sincos") for protein in protein_batch]),  # [B, L, 3, 2]
         BB_D_mask=torch.stack([_maybe_pad(protein, "BB_D_mask") for protein in protein_batch]),  # [B, L, 3]
         SC_D=torch.stack([_maybe_pad(protein, "SC_D") for protein in protein_batch]),  # [B, L, 4]
-        SC_D_sincos=torch.stack([_maybe_pad(protein, "SC_D_sincos") for protein in protein_batch]),  # [B, L, 3, 2]
+        SC_D_sincos=torch.stack([_maybe_pad(protein, "SC_D_sincos") for protein in protein_batch]),  # [B, L, 4, 2]
         SC_D_mask=torch.stack([_maybe_pad(protein, "SC_D_mask") for protein in protein_batch]),  # [B, L, 4]
         chi_1pi_periodic_mask=torch.stack([_maybe_pad(protein, "chi_1pi_periodic_mask") for protein in protein_batch]),
         # [B, L, 4]
