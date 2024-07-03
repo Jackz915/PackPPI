@@ -63,7 +63,7 @@ def parse_mutations(mutations_str):
     Parse a string containing one or more mutations separated by commas or a single mutation string.
     
     Parameters:
-    mutations_str (str): A string containing one or more mutations separated by commas (e.g., "R47A,E48A,H52A" or "R47A").
+    mutations_str (str): A string containing one or more mutations separated by commas (e.g., "RA47A,EA48A,HA52A" or "RA47A").
     
     Returns:
     list: A list of tuples, each containing (wild-type residue, chain ID, position, mutant residue).
