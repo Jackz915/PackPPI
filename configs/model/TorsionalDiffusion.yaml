@@ -1,0 +1,21 @@
+_target_: src.models.TorsionalDiffusion.TDiffusionModule
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 1e-4
+  weight_decay: 1e-12
+
+scheduler: # note: leaving `scheduler` empty will result in a learning-rate scheduler not being used
+  # _target_: torch.optim.lr_scheduler.StepLR
+  # _partial_: true
+  # step_size: ${...trainer.min_epochs} // 8  # note: using literal evalution manually until Hydra natively supports this functionality
+  # gamma: 0.9
+  # last_epoch: -1
+
+defaults:
+  - encoder_cfg: ProteinEncoder.yaml
+  - model_cfg: MpnnNet.yaml
+  - sample_cfg: Sampling.yaml
+
+seed: ${..seed}
