@@ -1,0 +1,11 @@
+eval_epochs: 1
+sample_during_training: true
+
+annealed_temp: 3
+mode: "ode"
+
+use_proximal: true
+violation_tolerance_factor: 12.
+clash_overlap_tolerance: 0.5
+lamda: 1.
+num_steps: 50
