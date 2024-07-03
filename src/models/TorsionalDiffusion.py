@@ -348,10 +348,10 @@ class TDiffusionModule(LightningModule):
         # SC_D_clash_mask = (per_residue_clash >= top_residue_clash.squeeze()[-1]).unsqueeze(-1).expand(-1, -1, 4)
         
         SC_D_resample_list = self.proximal_gradient(batch, SC_D_sample, SC_D_clash_mask,
-                                               self.hparams.sample_cfg.violation_tolerance_factor,
-                                               self.hparams.sample_cfg.clash_overlap_tolerance,
-                                               self.hparams.sample_cfg.lamda,
-                                               self.hparams.sample_cfg.num_steps)
+                                                    self.hparams.sample_cfg.violation_tolerance_factor,
+                                                    self.hparams.sample_cfg.clash_overlap_tolerance,
+                                                    self.hparams.sample_cfg.lamda,
+                                                    self.hparams.sample_cfg.num_steps)
         
         if return_list:
             return SC_D_resample_list  
