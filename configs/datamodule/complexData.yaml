@@ -1,0 +1,16 @@
+_target_: src.datamodules.complex_datamodule.ComplexDataModule
+
+task: 'complex'
+pdb_source: 'rc'
+data_dir: ${paths.data_dir}
+pdb_filename: "pdbs"
+model_data_cache_dir: "dataset_cache"
+force_process_data: False
+cache_processed_data: True
+
+len_region: [10, 3000]
+data_split: [0.8, 0.1, 0.1]
+
+batch_size: 4
+num_workers: 8
+pin_memory: False
