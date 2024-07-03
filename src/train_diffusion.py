@@ -90,7 +90,7 @@ def train(cfg: DictConfig):
     return metric_dict, object_dict
 
 
-@hydra.main(version_base="1.3", config_path="../configs", config_name="train_sidechain.yaml")
+@hydra.main(version_base="1.3", config_path="../configs", config_name="train_diffusion.yaml")
 def main(cfg: DictConfig) -> Optional[float]:
     utils.extras(cfg)
 
