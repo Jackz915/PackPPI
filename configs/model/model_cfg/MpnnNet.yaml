@@ -1,0 +1,8 @@
+hidden_dim: 128
+num_mpnn_layers: 3
+n_points: 8
+dropout: 0.1
+act: "relu"
+position_scale: 1.0
+use_ipmp: True
+k_neighbors: 32
