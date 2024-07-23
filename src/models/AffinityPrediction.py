@@ -68,7 +68,7 @@ class AffinityPrediction(LightningModule):
                 k_neighbors=self.hparams.model_cfg.k_neighbors)
 
             self.mut_bias = nn.Embedding(
-                num_embeddings = 21,
+                num_embeddings = 2,
                 embedding_dim = self.hparams.model_cfg.hidden_dim,
                 padding_idx = 0,
             )
@@ -85,9 +85,9 @@ class AffinityPrediction(LightningModule):
         )
 
         # Initialization
-        for p in self.parameters():
-            if p.dim() > 1:
-                nn.init.xavier_uniform_(p)
+        # for p in self.parameters():
+        #     if p.dim() > 1:
+        #         nn.init.xavier_uniform_(p)
 
         # metrics
         self.criterion = torch.nn.MSELoss(reduction="mean")
@@ -142,7 +142,7 @@ class AffinityPrediction(LightningModule):
         h_V_pret = self.get_pret_feature(batch)
         h_V = self.mutation_fusion(torch.cat([h_V_pret, h_V_mutation], dim=-1))
 
-        bias = self.mut_bias((batch.mut_mask * batch.residue_type).to(torch.int64))
+        bias = self.mut_bias(batch['mut_mask'])
         h_V = h_V + bias
         
         h_V = self.mutation_mpnn(h_V, h_E, E_idx, X, batch.residue_type, local_mask)
@@ -167,8 +167,8 @@ class AffinityPrediction(LightningModule):
                 h_mt = self.get_pret_feature(batch_mt)
 
         ddg_pred = self.ddg_predictor((h_mt - h_wt).max(dim=1)[0]) # mean(dim=1)
-        ddg_pred_inv = self.ddg_predictor((h_wt - h_mt).max(dim=1)[0]) # mean(dim=1)
-
+        ddg_pred_inv = self.ddg_predictor((h_mt - h_wt).max(dim=1)[0]) # mean(dim=1)
+        
         labels = batch['ddg']
         loss = (self.criterion(ddg_pred.squeeze(-1), labels) + self.criterion(ddg_pred_inv.squeeze(-1), -labels)) / 2
         return loss, ddg_pred
