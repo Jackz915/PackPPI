@@ -22,8 +22,8 @@ pip install torch_cluster-1.6.3+pt20cu117-cp39-cp39-linux_x86_64.whl
 pip install torch_scatter-2.1.2+pt20cu117-cp39-cp39-linux_x86_64.whl
 
 # 4. MolProbity Installation
-Please follow the recommended protocol: https://github.com/rlabduke/MolProbity
-The molprobity.clashscore function will returns a list of atoms with impossible steric clashes and the clashscore.
+# Please follow the recommended protocol: https://github.com/rlabduke/MolProbity
+# The molprobity.clashscore function will returns a list of atoms with impossible steric clashes and the clashscore.
 ```
 
 ### Download dataset (optional)
