@@ -14,14 +14,14 @@ conda activate PackPPI
 # 3. install pytorch and cudatoolkit based on your CUDA version
 conda install pytorch=2.0.1  cudatoolkit=11.7 -c pytorch
 
-# pip install torch_cluster and torch_scatter in py3.9
+# 4. pip install torch_cluster and torch_scatter in py3.9
 wget https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_cluster-1.6.3%2Bpt20cu117-cp39-cp39-linux_x86_64.whl
 wget https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_scatter-2.1.2%2Bpt20cu117-cp39-cp39-linux_x86_64.whl
 
 pip install torch_cluster-1.6.3+pt20cu117-cp39-cp39-linux_x86_64.whl
 pip install torch_scatter-2.1.2+pt20cu117-cp39-cp39-linux_x86_64.whl
 
-# 4. MolProbity Installation
+# 5. MolProbity Installation
 # Please follow the recommended protocol: https://github.com/rlabduke/MolProbity
 # The molprobity.clashscore function will returns a list of atoms with impossible steric clashes and the clashscore.
 ```
