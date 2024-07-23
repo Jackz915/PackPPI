@@ -1,16 +1,10 @@
 name: PackPPI
 channels:
   - pytorch
-  - https://conda.graylab.jhu.edu
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/msys2/
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge
-  - https://CDamogu:abcdefg@conda.graylab.jhu.edu
+  - pytorch
+  - bioconda
+  - defaults
+  - conda-forge
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu
@@ -25,8 +19,6 @@ dependencies:
   - charset-normalizer=3.3.2=pyhd8ed1ab_0
   - colorama=0.4.6=pyhd8ed1ab_0
   - comm=0.2.2=pyhd8ed1ab_0
-  - cuda-version=11.7=h67201e3_3
-  - cudatoolkit=11.7.1=h4bc3d14_13
   - cudnn=8.9.7.29=hbc23b4c_3
   - debugpy=1.8.2=py39h84cc369_0
   - decorator=5.1.1=pyhd8ed1ab_0
@@ -169,10 +161,7 @@ dependencies:
       - tensorboard==2.17.0
       - tensorboard-data-server==0.7.2
       - threadpoolctl==3.5.0
-      - torch==2.0.1+cu117
-      - torch-cluster==1.6.1+pt20cu117
       - torch-geometric==2.5.3
-      - torch-scatter==2.1.2+pt20cu117
       - torchtyping==0.1.4
       - triton==2.0.0
       - typeguard==4.3.0
