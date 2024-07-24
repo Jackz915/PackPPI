@@ -15,4 +15,4 @@ datamodule:
   
 model:
   mode: "linear"
-  ckpt_path: "/home/zhangjk/PackPPI/logs/pretrain/runs/2024-06-13_08-49-19/checkpoints/last.ckpt"
+  ckpt_path: "/path/to/PackPPI_pretrain_last.ckpt"
