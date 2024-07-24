@@ -47,7 +47,7 @@ bash download_skempi_v2.sh
 - Train model with default configuration:
 
 ``` bash
-python src/train.py train_diffusion.py
+python src/train_diffusion.py
 ```
 
 - Evaluate model:
@@ -83,10 +83,10 @@ optional arguments:
 
 ``` bash
 # with mutation encoder:
-python src/train.py train_affinity.py experiment=affinity_network.yaml
+python src/train_affinity.py experiment=affinity_network.yaml
 
 # without mutation encoder:
-python src/train.py train_affinity.py experiment=affinity_linear.yaml
+python src/train_affinity.py experiment=affinity_linear.yaml
 ```
 
 - Evaluate model:
