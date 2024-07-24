@@ -4,9 +4,9 @@
 ``` bash
 # 1. clone project
 git clone https://github.com/Jackz915/PackPPI
-cd PackPPI
 
 # 2. create conda environment
+cd PackPPI
 conda env create -f environment.yaml
 conda activate PackPPI
 
