@@ -49,7 +49,7 @@ class SO2Schedule(nn.Module):
             self.score_ = np.load(self.score_table_path)
         else:
             self.p_ = p(self.x, self.sigma[:, None], N=100, PI=PI)
-            self.score_ = grad(self.x, self.sigma[:, None], N=100, PI=PI) / self.p_
+            self.score_ = grad(self.x, self.sigma[:, None], N=100, PI=PI) / np.where(self.p_ == 0, 1e-10, self.p_)
             np.save(self.p_table_path, self.p_)
             np.save(self.score_table_path, self.score_)
 
