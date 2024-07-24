@@ -26,7 +26,7 @@ pip install torch_scatter-2.1.2+pt20cu117-cp39-cp39-linux_x86_64.whl
 ```
 
 ### Download trained models
-https://drive.google.com/drive/folders/1MbvDKjQJIMafll5Sy3ZI2rJaLMOj8CkT?usp=sharing  < br >
+https://drive.google.com/drive/folders/1MbvDKjQJIMafll5Sy3ZI2rJaLMOj8CkT?usp=sharing  <br>
 **Note**: Make sure you have specified the checkpoint path in the `ckpt_path` parameter in configuration.
 
 ### Download dataset (optional)
