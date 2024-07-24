@@ -65,6 +65,7 @@ python src/train_diffusion.py
 
 - Evaluate model:
 ``` bash
+# Run
 python src/eval_diffusion.py --h
 
 """
@@ -110,7 +111,7 @@ python src/train_affinity.py experiment=affinity_linear.yaml
 
 - Evaluate model:
 ``` bash
-python src/eval_affinity.py
+python src/eval_affinity.py (Coming soon)
 ```
 
 
