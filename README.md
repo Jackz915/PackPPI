@@ -13,7 +13,7 @@ A integrated framework for protein-protein complex side-chain packing and <br>
 
 
 
-## Install guide
+:rocket: ## Install guide
 
 ### Install dependencies
 ``` bash
