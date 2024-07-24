@@ -81,7 +81,7 @@ def evaluate_model(model: LightningModule, args: argparse.Namespace):
         metric = protein_analysis.get_metric(true_pdb=args.input, pred_pdb=protein_analysis.tmp_pdb)
         print(f"----- Metric: ----- {metric}")
     else:
-        print("----- No sidechains found in the input PDB. Skipping metric calculation. -----")
+        print("----- No side chain atoms found in the input PDB. Skipping metric calculation. -----")
 
     print("----- Finishing evaluation! -----")
 
