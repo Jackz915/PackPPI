@@ -11,7 +11,7 @@ datamodule:
   force_process_data: True
   cache_processed_data: True
   use_esm: False
-  cvfold_index: 1
+  cvfold_index: 0
   
 model:
   mode: "network"
