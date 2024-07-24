@@ -56,7 +56,7 @@ bash download_skempi_v2.sh
 ```
 
 
-## Usage
+## Usage :sparkles:
 
 ### Side-chain conformation modeling of protein complexes (PackPPI-MSC)
 - Train model with default configuration:
