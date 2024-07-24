@@ -14,45 +14,52 @@ from typing import List, Optional, Tuple
 from src.models.TorsionalDiffusion import TDiffusionModule
 from src.models.components import get_atom14_coords
 from src.utils.protein import from_pdb_file, to_pdb
+from src.utils.residue_constants import sidechain_atoms
 from src.utils.protein_analysis import ProteinAnalysis
-
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
 from src import utils
-# os.environ["PL_TORCH_DISTRIBUTED_BACKEND"] = "gloo"
 
 log = utils.get_pylogger(__name__)
 
 
-def main(args):
-    initialize(version_base="1.3", config_path="../configs")
-    # initialize(config_path="configs")
-    cfg = compose(config_name="eval_diffusion.yaml", return_hydra_config=True)
+
+def load_configuration(config_path: str, config_name: str) -> DictConfig:
+    initialize(version_base="1.3", config_path=config_path)
+    cfg = compose(config_name=config_name, return_hydra_config=True)
     HydraConfig().cfg = cfg
     OmegaConf.resolve(cfg)
+    return cfg
 
+def load_model(cfg: DictConfig, device: str) -> LightningModule:
     assert cfg.get("ckpt_path") is not None and os.path.exists(cfg.ckpt_path), "Invalid checkpoint path!"
     
-    print("----- Loading checkpoint! -----")
+    log.info("----- Loading checkpoint! -----")
     model = TDiffusionModule.load_from_checkpoint(
         checkpoint_path=cfg.ckpt_path,
-        map_location=args.device,
+        map_location=device,
         strict=False,
         encoder_cfg=hydra.utils.instantiate(cfg.model.encoder_cfg),
         model_cfg=hydra.utils.instantiate(cfg.model.model_cfg),
         sample_cfg=hydra.utils.instantiate(cfg.model.sample_cfg)
     )
-    model = model.to(args.device)
-    model.eval()
-    
-    print("----- Starting evaluation! -----")
-    protein_analysis = ProteinAnalysis(args.molprobity_clash_loc, 
-                                       args.outdir, 
-                                       args.device)
+    return model.to(device).eval()
 
-    protein = {}
-    protein.update(vars(from_pdb_file(Path(args.input), mse_to_met=True)))
+def contains_sidechains(pdb_file: str) -> bool:
+    with open(pdb_file, 'r') as f:
+        for line in f:
+            if line.startswith("ATOM"):
+                atom_name = line[12:16].strip()
+                if atom_name in sidechain_atoms:
+                    return True
+    return False
+
+def evaluate_model(model: LightningModule, args: argparse.Namespace):
+    log.info("----- Starting evaluation! -----")
+    protein_analysis = ProteinAnalysis(args.molprobity_clash_loc, args.outdir, args.device)
+
+    protein = vars(from_pdb_file(Path(args.input), mse_to_met=True))
 
     batch = protein_analysis.get_prot(args.input)
     batch = batch.to(args.device)
@@ -62,25 +69,31 @@ def main(args):
             SC_D_sample, _ = model.sampling(batch, use_proximal=args.use_proximal, return_list=False)
         else:
             SC_D_sample = model.sampling(batch, use_proximal=args.use_proximal, return_list=False)
-            
     except RuntimeError as e:
-        raise (e)
+        raise e
 
     predict_xyz = get_atom14_coords(batch.X, batch.residue_type, batch.BB_D, SC_D_sample)
     predict_xyz[..., :5, :] = batch.X[..., :5, :]
-    
+
     protein['atom_positions'] = predict_xyz.cpu().squeeze().numpy()
     temp_protein = to_pdb(protein)
-     
+
     with open(protein_analysis.tmp_pdb, 'w') as temp_file:
         for line in temp_protein:
             temp_file.writelines(line)
 
-    metric = protein_analysis.get_metric(true_pdb=args.input, pred_pdb=protein_analysis.tmp_pdb)
-    
-    print("----- Metric: -----", metric)
-    print("----- Finishing evaluation! -----")
+    if contains_sidechains(args.input):
+        metric = protein_analysis.get_metric(true_pdb=args.input, pred_pdb=protein_analysis.tmp_pdb)
+        log.info(f"----- Metric: ----- {metric}")
+    else:
+        log.info("----- No sidechains found in the input PDB. Skipping metric calculation. -----")
 
+    log.info("----- Finishing evaluation! -----")
+
+def main(args):
+    cfg = load_configuration(config_path="../configs", config_name="eval_diffusion.yaml")
+    model = load_model(cfg, args.device)
+    evaluate_model(model, args)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -92,4 +105,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     main(args)
-    
