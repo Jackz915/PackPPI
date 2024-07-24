@@ -19,11 +19,6 @@ from src.utils.protein_analysis import ProteinAnalysis
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
-from src import utils
-
-log = utils.get_pylogger(__name__)
-
-
 
 def load_configuration(config_path: str, config_name: str) -> DictConfig:
     initialize(version_base="1.3", config_path=config_path)
@@ -35,7 +30,7 @@ def load_configuration(config_path: str, config_name: str) -> DictConfig:
 def load_model(cfg: DictConfig, device: str) -> LightningModule:
     assert cfg.get("ckpt_path") is not None and os.path.exists(cfg.ckpt_path), "Invalid checkpoint path!"
     
-    log.info("----- Loading checkpoint! -----")
+    print("----- Loading checkpoint! -----")
     model = TDiffusionModule.load_from_checkpoint(
         checkpoint_path=cfg.ckpt_path,
         map_location=device,
@@ -56,7 +51,7 @@ def contains_sidechains(pdb_file: str) -> bool:
     return False
 
 def evaluate_model(model: LightningModule, args: argparse.Namespace):
-    log.info("----- Starting evaluation! -----")
+    print("----- Starting evaluation! -----")
     protein_analysis = ProteinAnalysis(args.molprobity_clash_loc, args.outdir, args.device)
 
     protein = vars(from_pdb_file(Path(args.input), mse_to_met=True))
@@ -84,11 +79,11 @@ def evaluate_model(model: LightningModule, args: argparse.Namespace):
 
     if contains_sidechains(args.input):
         metric = protein_analysis.get_metric(true_pdb=args.input, pred_pdb=protein_analysis.tmp_pdb)
-        log.info(f"----- Metric: ----- {metric}")
+        print(f"----- Metric: ----- {metric}")
     else:
-        log.info("----- No sidechains found in the input PDB. Skipping metric calculation. -----")
+        print("----- No sidechains found in the input PDB. Skipping metric calculation. -----")
 
-    log.info("----- Finishing evaluation! -----")
+    print("----- Finishing evaluation! -----")
 
 def main(args):
     cfg = load_configuration(config_path="../configs", config_name="eval_diffusion.yaml")
