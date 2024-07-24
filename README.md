@@ -1,7 +1,6 @@
 ## Install guide
 
 ### Install dependencies
-
 ``` bash
 # 1. clone project
 git clone https://github.com/Jackz915/PackPPI
@@ -26,8 +25,11 @@ pip install torch_scatter-2.1.2+pt20cu117-cp39-cp39-linux_x86_64.whl
 # The molprobity.clashscore function will returns a list of atoms with impossible steric clashes and the clashscore.
 ```
 
-### Download dataset (optional)
+### Download trained models
+https://drive.google.com/drive/folders/1MbvDKjQJIMafll5Sy3ZI2rJaLMOj8CkT?usp=sharing
+**Note**: Make sure you have specified the checkpoint path in the `ckpt_path` parameter in configuration.
 
+### Download dataset (optional)
 ``` bash
 cd data
 
@@ -48,12 +50,12 @@ Train model with default configuration:
 python src/train.py train_diffusion.py
 ```
 
-Inference:
+Evaluate model:
 ``` bash
-python src/inference_diffusion.py --h
+python src/eval_diffusion.py --h
 
 """
-usage: inference_diffusion.py [-h] --input INPUT --outdir OUTDIR --molprobity_clash_loc MOLPROBITY_CLASH_LOC [--use_proximal] [--device DEVICE]
+usage: eval_diffusion.py [-h] --input INPUT --outdir OUTDIR --molprobity_clash_loc MOLPROBITY_CLASH_LOC [--use_proximal] [--device DEVICE]
 optional arguments:
   -h, --help            show this help message and exit
   --input INPUT         The input pdb file path.
