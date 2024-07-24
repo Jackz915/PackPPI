@@ -76,7 +76,11 @@ optional arguments:
   --molprobity_clash_loc MOLPROBITY_CLASH_LOC
                         Path to /build/bin/molprobity.clashscore.
   --use_proximal        Use proximal optimize.
-  --device DEVICE       
+  --device DEVICE       cuda or cpu.
+
+**Note**: If you are using the --use_proximal parameter and running on a GPU, ensure that you have sufficient memory space.
+For larger protein structures (e.g., greater than 1500 amino acids), you may encounter memory insufficiency errors.
+In such cases, consider switching to CPU, although this will increase the runtime.
 """
 
 # Example output:
