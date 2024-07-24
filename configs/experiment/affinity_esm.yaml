@@ -1,0 +1,23 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /datamodule: skempiData.yaml
+  - override /model: AffinityPrediction.yaml
+  - override /trainer: ddp.yaml
+
+datamodule:
+  force_process_data: False
+  cache_processed_data: True
+  use_esm: True
+  cvfold_index: 0
+model:
+  mode: "esm"
+  model_cfg:
+    hidden_dim: 1280
+    
+trainer:
+  strategy: ddp_find_unused_parameters_false
+  
