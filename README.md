@@ -44,13 +44,13 @@ bash download_skempi_v2.sh
 ## Usage
 
 ### Side-chain conformation modeling of protein complexes (PackPPI-MSC)
-Train model with default configuration:
+- Train model with default configuration:
 
 ``` bash
 python src/train.py train_diffusion.py
 ```
 
-Evaluate model:
+- Evaluate model:
 ``` bash
 python src/eval_diffusion.py --h
 
@@ -79,6 +79,21 @@ optional arguments:
 
 
 ### Prediction of mutation effect on binding affinity (PackPPI-AP)
+- Train model with default configuration:
+
+``` bash
+# with mutation encoder:
+python src/train.py train_affinity.py experiment=affinity_network.yaml
+
+# without mutation encoder:
+python src/train.py train_affinity.py experiment=affinity_linear.yaml
+```
+
+- Evaluate model:
+``` bash
+python src/eval_affinity.py
+```
+
 
 
 
