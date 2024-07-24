@@ -76,10 +76,10 @@ optional arguments:
   --molprobity_clash_loc MOLPROBITY_CLASH_LOC
                         Path to /build/bin/molprobity.clashscore.
   --use_proximal        Use proximal optimize.
-  --device DEVICE
+  --device DEVICE       
 """
 
-# Output:
+# Example output:
 {'chi_0_ae_rad': tensor(0.2646), 'chi_0_ae_deg': tensor(15.1623), 'chi_0_acc': tensor(0.7979),
 'chi_1_ae_rad': tensor(0.3080), 'chi_1_ae_deg': tensor(17.6488), 'chi_1_acc': tensor(0.6268),
 'chi_2_ae_rad': tensor(0.8465), 'chi_2_ae_deg': tensor(48.5010), 'chi_2_acc': tensor(0.3008),
@@ -88,6 +88,8 @@ optional arguments:
 'total_acc': tensor(0.4959),
 'interface_acc': tensor(0.5438),
 'clashscore': 11.97}
+
+# The output structure is in the outdir folder named `sample.pdb`
 ```
 
 
