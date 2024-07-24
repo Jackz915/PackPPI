@@ -46,7 +46,7 @@ def main(args):
     model = model.to(args.device)
     model.eval()
     
-    print("----- Starting inference! -----")
+    print("----- Starting evaluation! -----")
     protein_analysis = ProteinAnalysis(args.molprobity_clash_loc, 
                                        args.outdir, 
                                        args.device)
@@ -80,7 +80,7 @@ def main(args):
     metric = protein_analysis.get_metric(true_pdb=args.input, pred_pdb=protein_analysis.tmp_pdb)
     
     print("----- Metric: -----", metric)
-    print("----- Finishing inference! -----")
+    print("----- Finishing evaluation! -----")
 
 
 if __name__ == '__main__':
@@ -89,7 +89,7 @@ if __name__ == '__main__':
     parser.add_argument('--outdir', type=str, help='Directory to store outputs.', required=True)
     parser.add_argument('--molprobity_clash_loc', type=str, help='Path to /build/bin/molprobity.clashscore.', required=True)
     parser.add_argument('--use_proximal', action="store_true", help='Use proximal optimize.')
-    parser.add_argument('--device', type=str, default='cuda')
+    parser.add_argument('--device', type=str, help='cuda or cpu', default='cuda')
     args = parser.parse_args()
 
     main(args)
