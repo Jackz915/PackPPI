@@ -102,11 +102,15 @@ In such cases, consider switching to CPU, although this will increase the runtim
 - Train model with default configuration:
 
 ``` bash
-# with mutation encoder:
+# PackPPI-AP with mutation encoder:
 python src/train_affinity.py experiment=affinity_network.yaml
 
-# without mutation encoder:
+# PackPPI-AP without mutation encoder:
 python src/train_affinity.py experiment=affinity_linear.yaml
+
+# ESM-2 pretrained model (esm2_t33_650M_UR50D):
+# make sure you install esmfold in your conda environment. (https://github.com/facebookresearch/esm) 
+python src/train_affinity.py experiment=affinity_esm.yaml
 ```
 
 - Evaluate model:
