@@ -59,7 +59,6 @@ def main(args):
 
     try:
         if args.use_proximal:
-            
             SC_D_sample, _ = model.sampling(batch, use_proximal=args.use_proximal, return_list=False)
         else:
             SC_D_sample = model.sampling(batch, use_proximal=args.use_proximal, return_list=False)
