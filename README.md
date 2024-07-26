@@ -114,7 +114,7 @@ python src/eval_diffusion.py --input data/test.pdb \
 
 The output structure is in the outdir folder named `structure.pdb` <br>
 **Note**: If you are using the **--use_proximal** parameter and running on a GPU, ensure that you have sufficient memory space.
-For larger protein structures (e.g., greater than **1500** amino acids), you may encounter memory insufficiency errors.
+For larger protein structures (e.g., larger than **1500** amino acids), you may encounter memory insufficiency errors.
 In such cases, consider switching to CPU, although this will increase the runtime.
 
 
