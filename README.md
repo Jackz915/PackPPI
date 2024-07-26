@@ -80,24 +80,41 @@ optional arguments:
                         Path to /build/bin/molprobity.clashscore.
   --use_proximal        Use proximal optimize.
   --device DEVICE       cuda or cpu.
+"""
+```
 
+Example:
+``` bash
+python src/eval_diffusion.py --input data/test.pdb \
+                             --outdir temp \
+                             --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \ 
+                             --device cuda
+
+{'chi_0_ae_rad': tensor(0.2468), 'chi_0_ae_deg': tensor(14.1410), 'chi_0_acc': tensor(0.7935),
+'chi_1_ae_rad': tensor(0.3722), 'chi_1_ae_deg': tensor(21.3241), 'chi_1_acc': tensor(0.5446),
+'chi_2_ae_rad': tensor(0.7627), 'chi_2_ae_deg': tensor(43.7001), 'chi_2_acc': tensor(0.3306),
+'chi_3_ae_rad': tensor(1.0014), 'chi_3_ae_deg': tensor(57.3753), 'chi_3_acc': tensor(0.2222),
+'atom_rmsd': tensor(0.8681), 'total_acc': tensor(0.4727), 'interface_acc': tensor(0.4035), 'clashscore': 19.47}
+```
+
+``` bash
+python src/eval_diffusion.py --input data/test.pdb \
+                             --outdir temp \
+                             --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \ 
+                             --device cuda
+                             --use_proximal
+
+{'chi_0_ae_rad': tensor(0.2622), 'chi_0_ae_deg': tensor(15.0255), 'chi_0_acc': tensor(0.8071),
+'chi_1_ae_rad': tensor(0.3870), 'chi_1_ae_deg': tensor(22.1737), 'chi_1_acc': tensor(0.5287),
+'chi_2_ae_rad': tensor(0.7673), 'chi_2_ae_deg': tensor(43.9655), 'chi_2_acc': tensor(0.3967),
+'chi_3_ae_rad': tensor(0.9359), 'chi_3_ae_deg': tensor(53.6242), 'chi_3_acc': tensor(0.2222),
+'atom_rmsd': tensor(0.9315), 'total_acc': tensor(0.4887), 'interface_acc': tensor(0.5389), 'clashscore': 14.86}
+```
+
+The output structure is in the outdir folder named `structure.pdb`
 **Note**: If you are using the --use_proximal parameter and running on a GPU, ensure that you have sufficient memory space.
 For larger protein structures (e.g., greater than 1500 amino acids), you may encounter memory insufficiency errors.
 In such cases, consider switching to CPU, although this will increase the runtime.
-"""
-
-# Example output:
-{'chi_0_ae_rad': tensor(0.2646), 'chi_0_ae_deg': tensor(15.1623), 'chi_0_acc': tensor(0.7979),
-'chi_1_ae_rad': tensor(0.3080), 'chi_1_ae_deg': tensor(17.6488), 'chi_1_acc': tensor(0.6268),
-'chi_2_ae_rad': tensor(0.8465), 'chi_2_ae_deg': tensor(48.5010), 'chi_2_acc': tensor(0.3008),
-'chi_3_ae_rad': tensor(0.8517), 'chi_3_ae_deg': tensor(48.7990), 'chi_3_acc': tensor(0.2581),
-'atom_rmsd': tensor(0.7784),
-'total_acc': tensor(0.4959),
-'interface_acc': tensor(0.5438),
-'clashscore': 11.97}
-
-# The output structure is in the outdir folder named `structure.pdb`
-```
 
 
 ### Prediction of mutation effect on binding affinity (PackPPI-AP)
