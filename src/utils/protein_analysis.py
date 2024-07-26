@@ -10,7 +10,7 @@ from src.utils.protein import from_pdb_file, to_pdb
 
 
 class ProteinAnalysis:
-    def __init__(self, molprobity_clash_loc, tmp_dir, device, 
+    def __init__(self, molprobity_clash_loc, tmp_dir, device='cpu', 
                  scwrl_loc=None, faspr_loc=None, rosetta_loc=None):
         self.molprobity_clash_loc = molprobity_clash_loc
         self.scwrl_loc = scwrl_loc
