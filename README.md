@@ -67,7 +67,6 @@ python src/train_diffusion.py
 
 - Evaluate model:
 ``` bash
-# Run
 python src/eval_diffusion.py --h
 
 """
@@ -83,7 +82,7 @@ optional arguments:
 """
 ```
 
-Example:
+- Example:
 ``` bash
 python src/eval_diffusion.py --input data/test.pdb \
                              --outdir temp \
@@ -94,7 +93,8 @@ python src/eval_diffusion.py --input data/test.pdb \
 'chi_1_ae_rad': tensor(0.3722), 'chi_1_ae_deg': tensor(21.3241), 'chi_1_acc': tensor(0.5446),
 'chi_2_ae_rad': tensor(0.7627), 'chi_2_ae_deg': tensor(43.7001), 'chi_2_acc': tensor(0.3306),
 'chi_3_ae_rad': tensor(1.0014), 'chi_3_ae_deg': tensor(57.3753), 'chi_3_acc': tensor(0.2222),
-'atom_rmsd': tensor(0.8681), 'total_acc': tensor(0.4727), 'interface_acc': tensor(0.4035), 'clashscore': 19.47}
+'atom_rmsd': tensor(0.8681), 'total_acc': tensor(0.4727), 'interface_acc': tensor(0.4035),
+'clashscore': 19.47}
 ```
 
 ``` bash
@@ -108,7 +108,8 @@ python src/eval_diffusion.py --input data/test.pdb \
 'chi_1_ae_rad': tensor(0.3870), 'chi_1_ae_deg': tensor(22.1737), 'chi_1_acc': tensor(0.5287),
 'chi_2_ae_rad': tensor(0.7673), 'chi_2_ae_deg': tensor(43.9655), 'chi_2_acc': tensor(0.3967),
 'chi_3_ae_rad': tensor(0.9359), 'chi_3_ae_deg': tensor(53.6242), 'chi_3_acc': tensor(0.2222),
-'atom_rmsd': tensor(0.9315), 'total_acc': tensor(0.4887), 'interface_acc': tensor(0.5389), 'clashscore': 14.86}
+'atom_rmsd': tensor(0.9315), 'total_acc': tensor(0.4887), 'interface_acc': tensor(0.5389),
+'clashscore': 14.86}
 ```
 
 The output structure is in the outdir folder named `structure.pdb` <br>
