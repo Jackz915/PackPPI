@@ -30,7 +30,7 @@ def load_configuration(config_path: str, config_name: str) -> DictConfig:
 def load_model(cfg: DictConfig, device: str) -> LightningModule:
     assert cfg.get("ckpt_path") is not None and os.path.exists(cfg.ckpt_path), "Invalid checkpoint path!"
     
-    print("----- Loading checkpoint! -----")
+    print("----- Loading {cfg.ckpt_path} checkpoint! -----")
     model = TDiffusionModule.load_from_checkpoint(
         checkpoint_path=cfg.ckpt_path,
         map_location=device,
