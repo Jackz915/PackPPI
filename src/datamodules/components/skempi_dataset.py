@@ -88,8 +88,12 @@ class SkempiDataset(Dataset):
             residue_type = torch.from_numpy(protein["aaindex"]).to(torch.int64)
             atom_mask = torch.from_numpy(protein["atom_mask"]).to(torch.float32)
             residue_index = torch.from_numpy(protein["residue_index"]).to(torch.int64)
-            ddg = torch.tensor(protein["ddG"]).to(torch.float32)
             chain_id = protein["chain_id"]
+
+            if "ddG" in protein:
+                ddg = torch.tensor(protein["ddG"]).to(torch.float32)
+            else:
+                ddg = torch.tensor(0.0, dtype=torch.float32)
 
             # Create chain_indices
             unique_chain = pd.unique(chain_id)
@@ -123,7 +127,12 @@ class SkempiDataset(Dataset):
                     index = np.logical_and(chain_id == mut_chain, residue_index == mut_resseq).to(torch.bool)
 
                     # change residue_type
-                    residue_type_mut[index] = rc.restypes.index(mut_mt)
+                    ref_wt = rc.restypes[residue_type_mut[index]] 
+                    
+                    if ref_wt != mut_wt:
+                        raise ValueError(f"The mutation: {mut_wt}{mut_chain}{mut_resseq}{mut_mt} is inconsistent with wild-type {ref_wt} in PDB file")
+                    else:
+                        residue_type_mut[index] = rc.restypes.index(mut_mt)
 
                     # change atom mask
                     atoms = rc.restype_name_to_atom14_names[rc.restype_1to3[mut_mt]]
@@ -134,6 +143,7 @@ class SkempiDataset(Dataset):
                     SC_D_mut[index] = 0.
                     SC_D_sincos_mut[index] = 0.
                 else:
+                    print(f"Ignore the mutation: {mut_wt}{mut_chain}{mut_resseq}{mut_mt}")
                     continue
                     
             if esm_model is not None:
