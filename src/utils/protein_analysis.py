@@ -21,7 +21,7 @@ class ProteinAnalysis:
         self.tmp_dir = tmp_dir
         os.makedirs(self.tmp_dir, exist_ok=True)
         self.tmp_log = os.path.join(tmp_dir, 'molprobity_clash.log')
-        self.tmp_pdb = os.path.join(tmp_dir, 'sample.pdb')
+        self.tmp_pdb = os.path.join(tmp_dir, 'structure.pdb')
 
     def get_clashscore(self, pdb):
         clash_line = f'{self.molprobity_clash_loc} model={pdb} keep_hydrogens=True > {self.tmp_log}'
