@@ -65,7 +65,7 @@ bash download_skempi_v2.sh
 python src/train_diffusion.py
 ```
 
-- Evaluate model:
+- Evaluate model (change the `ckpt_path` in configs/eval_diffusion.yaml to your trained model path):
 ``` bash
 python src/eval_diffusion.py --h
 
@@ -84,11 +84,12 @@ optional arguments:
 
 - Example:
 ``` bash
-python src/eval_diffusion.py --input data/test.pdb \
+python src/eval_diffusion.py --input data/6ere.pdb \
                              --outdir temp \
                              --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \ 
                              --device cuda
 
+# Output
 {'chi_0_ae_rad': tensor(0.2468), 'chi_0_ae_deg': tensor(14.1410), 'chi_0_acc': tensor(0.7935),
 'chi_1_ae_rad': tensor(0.3722), 'chi_1_ae_deg': tensor(21.3241), 'chi_1_acc': tensor(0.5446),
 'chi_2_ae_rad': tensor(0.7627), 'chi_2_ae_deg': tensor(43.7001), 'chi_2_acc': tensor(0.3306),
@@ -98,12 +99,13 @@ python src/eval_diffusion.py --input data/test.pdb \
 ```
 
 ``` bash
-python src/eval_diffusion.py --input data/test.pdb \
+python src/eval_diffusion.py --input data/6ere.pdb \
                              --outdir temp \
                              --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \ 
                              --device cuda
                              --use_proximal
 
+# Output
 {'chi_0_ae_rad': tensor(0.2622), 'chi_0_ae_deg': tensor(15.0255), 'chi_0_acc': tensor(0.8071),
 'chi_1_ae_rad': tensor(0.3870), 'chi_1_ae_deg': tensor(22.1737), 'chi_1_acc': tensor(0.5287),
 'chi_2_ae_rad': tensor(0.7673), 'chi_2_ae_deg': tensor(43.9655), 'chi_2_acc': tensor(0.3967),
@@ -133,10 +135,42 @@ python src/train_affinity.py experiment=affinity_linear.yaml
 python src/train_affinity.py experiment=affinity_esm.yaml
 ```
 
-- Evaluate model:
+- Evaluate model (change the `ckpt_path` in configs/eval_affinity.yaml to your trained model path):
 ``` bash
-python src/eval_affinity.py (Coming soon)
+python src/eval_affinity.py -h
+
+"""
+usage: eval_affinity.py [-h] --input INPUT --mutstr MUTSTR [--device DEVICE]
+
+optional arguments:
+  -h, --help       show this help message and exit
+  --input INPUT    The input pdb file path.
+  --mutstr MUTSTR  A string containing wild-type residue, chain ID, position, and mutant residue (e.g., "RA47A").
+                   If more than one mutation, please separated by commas (e.g., "RA47A,EA48A").
+  --device DEVICE  cuda or cpu
+"""
 ```
+
+- Example (Single mutation):
+``` bash
+python src/eval_affinity.py --input data/2FTL.pdb
+                            --mutstr KI15G
+                            --device cuda
+
+# Output
+----- The predicted binding affinity change (wildtype-mutant) is 13.1932 kcal/mol -----
+```
+
+- Example (Multi mutations):
+``` bash
+python src/eval_affinity.py --input data/1BRS.pdb
+                            --mutstr KA25A,DD35A
+                            --device cuda
+
+# Output
+----- The predicted binding affinity change (wildtype-mutant) is 8.2439 kcal/mol -----
+```
+
 
 
 
