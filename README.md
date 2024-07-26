@@ -96,7 +96,7 @@ In such cases, consider switching to CPU, although this will increase the runtim
 'interface_acc': tensor(0.5438),
 'clashscore': 11.97}
 
-# The output structure is in the outdir folder named `sample.pdb`
+# The output structure is in the outdir folder named `structure.pdb`
 ```
 
 
