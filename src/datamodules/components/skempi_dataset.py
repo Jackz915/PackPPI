@@ -220,7 +220,7 @@ class SkempiDataset(Dataset):
                 protein_data = Data(
                     num_nodes=num_nodes,
                     ddg=ddg.to(torch.float32),
-                    mut_mask=mut_mask.to(torch.float32),
+                    mut_mask=mut_mask.to(torch.int64),
     
                     # common feature
                     X=X.to(torch.float32),
