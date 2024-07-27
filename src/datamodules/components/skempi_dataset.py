@@ -122,6 +122,7 @@ class SkempiDataset(Dataset):
                 mut_chain = mut['chain']
                 mut_resseq = mut['resseq']
                 mut_mt = mut['mt']
+                mut_wt = mut['wt']
                 if mut_chain in chain_id and mut_mt in rc.restypes:
                     # get mutation idx
                     index = np.logical_and(chain_id == mut_chain, residue_index == mut_resseq).to(torch.bool)
