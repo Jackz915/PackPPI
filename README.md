@@ -104,7 +104,7 @@ python src/eval_diffusion.py --input data/6ere.pdb \
 python src/eval_diffusion.py --input data/6ere.pdb \
                              --outdir temp \
                              --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \ 
-                             --device cuda
+                             --device cuda \
                              --use_proximal
 
 # Output
@@ -155,8 +155,8 @@ optional arguments:
 
 - Example (Single mutation):
 ``` bash
-python src/eval_affinity.py --input data/2FTL.pdb
-                            --mutstr KI15G
+python src/eval_affinity.py --input data/2FTL.pdb \
+                            --mutstr KI15G \
                             --device cuda
 
 # Output
@@ -165,8 +165,8 @@ python src/eval_affinity.py --input data/2FTL.pdb
 
 - Example (Multi mutations):
 ``` bash
-python src/eval_affinity.py --input data/1BRS.pdb
-                            --mutstr KA25A,DD35A
+python src/eval_affinity.py --input data/1BRS.pdb \
+                            --mutstr KA25A,DD35A \
                             --device cuda
 
 # Output
