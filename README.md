@@ -88,7 +88,7 @@ optional arguments:
 ``` bash
 python src/eval_diffusion.py --input data/6ere.pdb \
                              --outdir temp \
-                             --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \ 
+                             --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \
                              --device cuda
 
 # Output
@@ -103,7 +103,7 @@ python src/eval_diffusion.py --input data/6ere.pdb \
 ``` bash
 python src/eval_diffusion.py --input data/6ere.pdb \
                              --outdir temp \
-                             --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \ 
+                             --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \
                              --device cuda \
                              --use_proximal
 
