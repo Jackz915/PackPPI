@@ -12,7 +12,7 @@ A integrated framework for protein-protein complex side-chain packing and <br>
 ## Overview :mag:
 The PackPPI framework comprises three functional modules: side-chain conformation modeling of protein complexes (PackPPI-MSC), proximal optimization (PackPPI-Prox), and prediction of the effect of mutations on binding affinity (PackPPI-AP). Given the structural context of a protein complex, the framework first employs a joint diffusion probabilistic model to generate reliable side-chain conformations. It then uses the proximal gradient descent method to avoid atomic collisions during sampling, obtaining high-confidence target structures. Subsequently, the geometric features of the learned structural context are utilized for downstream ΔΔG prediction.
 
-![framework.png](./imgs/framework.png)
+![framework.png](./imgs/Framework.png)
 
 
 ## Install guide :rocket:
