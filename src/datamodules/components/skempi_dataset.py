@@ -118,6 +118,8 @@ class SkempiDataset(Dataset):
 
             # Create mutation residue features.
             residue_type_mut, atom_mask_mut, SC_D_mut, SC_D_sincos_mut = residue_type.clone(), atom_mask.clone(), SC_D.clone(), SC_D_sincos.clone()
+
+            pdb_path = protein['pdb_path']
             for mut in protein['mutations']:
                 mut_chain = mut['chain']
                 mut_resseq = mut['resseq']
@@ -128,10 +130,10 @@ class SkempiDataset(Dataset):
                     index = np.logical_and(chain_id == mut_chain, residue_index == mut_resseq).to(torch.bool)
 
                     # change residue_type
-                    ref_wt = rc.restypes[residue_type_mut[index]] 
+                    ref_wt = rc.restypes[residue_type[index]] 
                     
                     if ref_wt != mut_wt:
-                        raise ValueError(f"The mutation: {mut_wt}{mut_chain}{mut_resseq}{mut_mt} is inconsistent with wild-type {ref_wt} in PDB file")
+                        raise ValueError(f"The mutation: {mut_wt}{mut_chain}{mut_resseq}{mut_mt} is inconsistent with wild-type {ref_wt} in {pdb_path} file")
                     else:
                         residue_type_mut[index] = rc.restypes.index(mut_mt)
 
