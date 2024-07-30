@@ -12,6 +12,7 @@ from pytorch_lightning import Callback, LightningDataModule, LightningModule, Tr
 from typing import List, Optional, Tuple
 
 import src.utils.residue_constants as rc
+from src.utils.features import make_atom14_masks, atom14_to_atom37
 from src.models.TorsionalDiffusion import TDiffusionModule
 from src.models.components import get_atom14_coords
 from src.utils.protein import from_pdb_file, to_pdb
