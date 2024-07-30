@@ -83,7 +83,6 @@ class ProteinAnalysis:
             interface_acc += (chi_acc * interface_mask).sum() / interface_num
     
         predict_coords = get_atom14_coords(true_data.X, true_data.residue_type, true_data.BB_D, pred_data.SC_D)
-        predict_coords[..., :5, :] = true_data.X[..., :5, :]
         metric["atom_rmsd"] = self.compute_rmsd(true_data.X, predict_coords, true_data.atom_mask, true_data.residue_mask)
         metric["total_acc"] = total_acc / 4
         metric["interface_acc"] = interface_acc / 4
