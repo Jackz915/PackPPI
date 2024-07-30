@@ -76,7 +76,7 @@ def evaluate_model(model: LightningModule, args: argparse.Namespace):
     temp_protein = to_pdb(protein)
 
     with open(protein_analysis.tmp_pdb, 'w') as temp_file:
-        temp_file.writelines(line)
+        temp_file.writelines(temp_protein)
 
     if contains_sidechains(args.input):
         metric = protein_analysis.get_metric(true_pdb=args.input, pred_pdb=protein_analysis.tmp_pdb)
