@@ -185,7 +185,6 @@ def _chain_end(atom_index, end_resname, chain_name, residue_index) -> str:
     return (f'{chain_end:<6}{atom_index:>5}      {end_resname:>3} '
             f'{chain_name:>1}{residue_index:>4}')
 
-
 def to_pdb(prot: Union[Protein, dict], keep_chains: Optional[list] = None) -> str:
     """Converts a `Protein` instance to a PDB string.
 
@@ -246,23 +245,36 @@ def to_pdb(prot: Union[Protein, dict], keep_chains: Optional[list] = None) -> st
             last_chain_index = chain_id[i]
             atom_index += 1  # Atom index increases at the TER symbol.
 
-        res_name_3 = res_1to3(aaindex[i])
-        atom_idxs = np.array([x for x in range(14)])
+        if atom_positions.shape[-2] == 14:
+            # If the protein has 14 atoms per residue, then it is a reduced representation and
+            # the order of the atoms in each residue depends on the residue type.
+            atom_types = rc.restype_name_to_atom14_names[rc.restype_1to3[rc.restypes[aaindex[i]]]]
+        elif atom_positions.shape[-2] == 37:
+            # If the protein has 37 atoms per residue, then it is a full representation and
+            # the order of the atoms in each residue is fixed.
+            atom_types = rc.atom_types
+        else:
+            raise ValueError("Invalid number of atoms per residue.")
 
-        for atom_idx, pos, mask, b_factor in zip(atom_idxs, atom_positions[i], atom_mask[i], b_factors[i]):
+        res_name_3 = res_1to3(aaindex[i])
+        # atom_idxs = np.array([x for x in range(14)])
+
+        for atom_name, pos, mask, b_factor in zip(
+                atom_types, atom_positions[i], atom_mask[i], b_factors[i]):
             if mask < 0.5:
                 continue
 
             record_type = 'ATOM'
-            name = rc.restype_name_to_atom14_names[res_name_3][atom_idxs[atom_idx]]
+            # name = rc.restype_name_to_atom14_names[res_name_3][atom_idxs[atom_idx]]
+            name = atom_name if len(atom_name) == 4 else f' {atom_name}'
             alt_loc = ''
             insertion_code = ''
             occupancy = 1.00
-            element = name[0]  # Protein supports only C, N, O, S, this works.
+            element = atom_name[0]  # Protein supports only C, N, O, S, this works.
             charge = ''
 
             # PDB is a columnar format, every space matters here!
-            atom_line = (f'{record_type:<6}{atom_index:>5}  {name:<3}{alt_loc:>1}'
+            atom_line = (f'{record_type:<6}{atom_index:>5} {name:<4}{alt_loc:>1}'
                          f'{res_name_3:>3} {chain_id[i]:>1}'
                          f'{residue_index[i]:>4}{insertion_code:>1}   '
                          f'{pos[0]:>8.3f}{pos[1]:>8.3f}{pos[2]:>8.3f}'
@@ -280,5 +292,4 @@ def to_pdb(prot: Union[Protein, dict], keep_chains: Optional[list] = None) -> st
     # Pad all lines to 80 characters.
     pdb_lines = [line.ljust(80) for line in pdb_lines]
     return '\n'.join(pdb_lines) + '\n'  # Add terminating newline.
-
 
