@@ -12,8 +12,6 @@ from omegaconf import OmegaConf, DictConfig
 from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
 from typing import List, Optional, Tuple
 
-import src.utils.residue_constants as rc
-from src.utils.features import make_atom14_masks, atom14_to_atom37
 from src.models.TorsionalDiffusion import TDiffusionModule
 from src.models.components import get_atom14_coords
 from src.utils.protein import from_pdb_file, to_pdb
@@ -69,12 +67,7 @@ def evaluate_model(model: LightningModule, args: argparse.Namespace):
         raise e
 
     predict_xyz = get_atom14_coords(batch.X, batch.residue_type, batch.BB_D, SC_D_sample)
-    residx_atom37_to_atom14, atom37_atom_exists, _, _ = make_atom14_masks(batch.residue_type)
-    predict_xyz = atom14_to_atom37(predict_xyz, residx_atom37_to_atom14, atom37_atom_exists)
-
-    atom_positions = predict_xyz.cpu().squeeze().numpy()
-    protein['atom_positions'] = atom_positions
-    protein['atom_mask'] = (np.sum(atom_positions, axis=-1) != 0.0).astype(np.int32).squeeze()
+    protein['atom_positions'] = predict_xyz.cpu().squeeze().numpy()
     temp_protein = to_pdb(protein)
 
     with open(protein_analysis.tmp_pdb, 'w') as temp_file:
