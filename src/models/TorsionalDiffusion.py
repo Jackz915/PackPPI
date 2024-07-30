@@ -11,6 +11,7 @@ from src.models.components.encoder import ProteinEncoder
 from src.models.components.mpnn import MpnnNet
 from src.models.components.layers import MLP
 from src.models.components.clash import compute_residue_clash
+from src.models.components.optimize import proximal_optimizer
 from src.utils.pylogger import get_pylogger
 
 
@@ -250,58 +251,6 @@ class TDiffusionModule(LightningModule):
         metric = self.analyze_samples(dummy_batch, SC_D_sample=SC_D_sample)
         return metric
 
-    def proximal_gradient(self, batch, SC_D_sample, SC_D_clash_mask, 
-                          violation_tolerance_factor, 
-                          clash_overlap_tolerance,
-                          lamda, 
-                          num_steps=1):
-        z = SC_D_sample * SC_D_clash_mask
-
-        def optimization_function(x):
-            x = x * SC_D_clash_mask
-            x = torch.where(SC_D_clash_mask, x, SC_D_sample)
-
-            per_residue_clash = compute_residue_clash(batch, x, 
-                                                      violation_tolerance_factor, 
-                                                      clash_overlap_tolerance)
-
-            sc_loss = (torch.abs(x - z) ** 2).sum(dim=(-1)).mean() 
-            clash_loss = per_residue_clash.mean() 
-            
-            loss = sc_loss + lamda * clash_loss
-            return loss
-
-        SC_D_resample = z.clone()
-        SC_D_resample.requires_grad = True
-
-        # optimizer = torch.optim.SGD([SC_D_resample], lr=5e-2)
-        optimizer = torch.optim.Adam([SC_D_resample], lr=1e-2)
-
-        initial_loss = optimization_function(SC_D_resample).item()
-        
-        # List to store the results at each step
-        SC_D_resample_list = []
-    
-        # Run optimizer for multiple steps
-        for _ in range(num_steps):
-            optimizer.zero_grad()
-            loss = optimization_function(SC_D_resample)
-            loss.backward()
-            # print(loss.item())
-            optimizer.step()
-
-            # Store the current SC_D_resample
-            SC_D_resample_clone = SC_D_resample.detach().clone()
-            SC_D_resample_clone = torch.where(SC_D_clash_mask, SC_D_resample_clone, SC_D_sample)
-            SC_D_resample_list.append(SC_D_resample_clone)
-        
-        final_loss = loss.item()
-
-        if final_loss < initial_loss:
-            return SC_D_resample_list  # Return the list of SC_D_resample
-        else:
-            return [SC_D_sample.detach()] * num_steps  # Return the initial sample for all steps if no improvement
-
     def sampling(self, batch: Any, use_proximal: bool = False, return_list: bool = False):
         t = torch.tensor([1.]).repeat_interleave(batch.max_size * batch.num_proteins).to(self.device)
         SC_D_sample, _ = self.add_sc_noise(batch, t)
@@ -333,30 +282,13 @@ class TDiffusionModule(LightningModule):
         if not use_proximal:
             return SC_D_sample
 
-        assert batch.num_proteins == 1
-        per_residue_clash = compute_residue_clash(batch, SC_D_sample,
-                                                  self.hparams.sample_cfg.violation_tolerance_factor,
-                                                  self.hparams.sample_cfg.clash_overlap_tolerance)
-
-        mean_clash = per_residue_clash.mean()
-        SC_D_clash_mask = (per_residue_clash > mean_clash).unsqueeze(-1).expand(-1, -1, 4)
-            
-        # median_clash = per_residue_clash.median(dim=-1)[0].unsqueeze(-1).expand(-1, per_residue_clash.shape[1])
-        # SC_D_clash_mask = (per_residue_clash > median_clash).unsqueeze(-1).expand(-1, -1, 4)
+        SC_D_resample = proximal_optimizer(batch, SC_D_sample,
+                                           self.hparams.sample_cfg.violation_tolerance_factor,
+                                           self.hparams.sample_cfg.clash_overlap_tolerance,
+                                           self.hparams.sample_cfg.lamda,
+                                           self.hparams.sample_cfg.num_steps)
         
-        # top_residue_clash, _ = torch.topk(per_residue_clash, 10)
-        # SC_D_clash_mask = (per_residue_clash >= top_residue_clash.squeeze()[-1]).unsqueeze(-1).expand(-1, -1, 4)
-        
-        SC_D_resample_list = self.proximal_gradient(batch, SC_D_sample, SC_D_clash_mask,
-                                                    self.hparams.sample_cfg.violation_tolerance_factor,
-                                                    self.hparams.sample_cfg.clash_overlap_tolerance,
-                                                    self.hparams.sample_cfg.lamda,
-                                                    self.hparams.sample_cfg.num_steps)
-        
-        if return_list:
-            return SC_D_resample_list  
-        else:
-            return SC_D_resample_list[-1], SC_D_sample
+        return SC_D_resample
 
     def compute_rmsd(self, true_coords, pred_coords, atom_mask, residue_mask):
         per_atom_sq_err = torch.sum((true_coords - pred_coords) ** 2, dim=-1) * atom_mask * residue_mask[..., None]
