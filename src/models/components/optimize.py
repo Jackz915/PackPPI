@@ -22,7 +22,7 @@ def proximal_optimizer(batch, SC_D,
                        violation_tolerance_factor, 
                        clash_overlap_tolerance,
                        lamda, 
-                       num_steps=10):
+                       num_steps=50):
 
     assert batch.num_proteins == 1
 
