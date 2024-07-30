@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import argparse
 from pathlib import Path
 import rootutils
