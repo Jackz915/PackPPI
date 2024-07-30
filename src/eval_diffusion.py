@@ -11,11 +11,13 @@ from omegaconf import OmegaConf, DictConfig
 from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
 from typing import List, Optional, Tuple
 
+import src.utils.residue_constants as rc
 from src.models.TorsionalDiffusion import TDiffusionModule
 from src.models.components import get_atom14_coords
 from src.utils.protein import from_pdb_file, to_pdb
 from src.utils.residue_constants import sidechain_atoms
 from src.utils.protein_analysis import ProteinAnalysis
+
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
@@ -68,14 +70,16 @@ def evaluate_model(model: LightningModule, args: argparse.Namespace):
         raise e
 
     predict_xyz = get_atom14_coords(batch.X, batch.residue_type, batch.BB_D, SC_D_sample)
-    predict_xyz[..., :5, :] = batch.X[..., :5, :]
+    residx_atom37_to_atom14, atom37_atom_exists, _, _ = make_atom14_masks(batch.residue_type)
+    predict_xyz = atom14_to_atom37(predict_xyz, residx_atom37_to_atom14, atom37_atom_exists)
 
-    protein['atom_positions'] = predict_xyz.cpu().squeeze().numpy()
+    atom_positions = predict_xyz.cpu().squeeze().numpy()
+    protein['atom_positions'] = atom_positions
+    protein['atom_mask'] = (np.sum(atom_positions, axis=-1) != 0.0).astype(np.int32).squeeze()
     temp_protein = to_pdb(protein)
 
     with open(protein_analysis.tmp_pdb, 'w') as temp_file:
-        for line in temp_protein:
-            temp_file.writelines(line)
+        temp_file.writelines(line)
 
     if contains_sidechains(args.input):
         metric = protein_analysis.get_metric(true_pdb=args.input, pred_pdb=protein_analysis.tmp_pdb)
