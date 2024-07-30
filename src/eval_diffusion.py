@@ -62,10 +62,7 @@ def evaluate_model(model: LightningModule, args: argparse.Namespace):
     batch = batch.to(args.device)
 
     try:
-        if args.use_proximal:
-            SC_D_sample, _ = model.sampling(batch, use_proximal=args.use_proximal, return_list=False)
-        else:
-            SC_D_sample = model.sampling(batch, use_proximal=args.use_proximal, return_list=False)
+        SC_D_sample = model.sampling(batch, use_proximal=args.use_proximal)
     except RuntimeError as e:
         raise e
 
