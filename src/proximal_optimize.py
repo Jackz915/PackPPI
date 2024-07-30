@@ -50,7 +50,7 @@ def main(args: argparse.Namespace):
     except RuntimeError as e:
         raise e
 
-    predict_xyz = get_atom14_coords(batch.X, batch.residue_type, batch.BB_D, SC_D_sample)
+    predict_xyz = get_atom14_coords(batch.X, batch.residue_type, batch.BB_D, SC_D_resample)
     residx_atom37_to_atom14, atom37_atom_exists, _, _ = make_atom14_masks(batch.residue_type)
     predict_xyz = atom14_to_atom37(predict_xyz, residx_atom37_to_atom14, atom37_atom_exists)
 
