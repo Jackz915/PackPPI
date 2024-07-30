@@ -345,7 +345,6 @@ def compute_residue_clash(batch,
 
     # get atom14_coords
     atom14_coords = get_atom14_coords(batch.X, batch.residue_type, batch.BB_D, SC_D)
-    atom14_coords[..., :5, :] = batch.X[..., :5, :]
 
     clash_info = find_sc_violations(atom14_pred_positions=atom14_coords,
                                     atom14_atom_exists=batch.atom_mask,
@@ -358,7 +357,7 @@ def compute_residue_clash(batch,
                       clash_info["within_residues"]["per_atom_loss_sum"])  # [B, N, 14]
 
     # mask backbone atoms loss
-    per_atom_clash[..., :5] = 0
+    per_atom_clash[..., :4] = 0
 
     # scale by per_residue_atoms
     per_residue_clash = torch.sum(per_atom_clash, dim=(-1)) / (eps + per_residue_atoms) # [B, N]
