@@ -74,6 +74,7 @@ def get_sc_atom14_mask(S, chi_id):
 
 # @torch.no_grad()
 def get_atom14_coords(X, S, BB_D, SC_D):
+
     # Convert angles to sin/cos
     BB_D_sincos = torch.stack((torch.sin(BB_D), torch.cos(BB_D)), dim=-1)
     SC_D_sincos = torch.stack((torch.sin(SC_D), torch.cos(SC_D)), dim=-1)
@@ -82,7 +83,7 @@ def get_atom14_coords(X, S, BB_D, SC_D):
     bb_to_global = get_bb_frames(X[..., 0, :], X[..., 1, :], X[..., 2, :])
 
     # Concatenate all angles
-    angle_agglo = torch.cat([BB_D_sincos, SC_D_sincos], dim=-2)  # [B, L, 7, 2]
+    angle_agglo = torch.cat([BB_D_sincos, SC_D_sincos], dim=-2) # [B, L, 7, 2]
 
     # Get norm of angles
     norm_denom = torch.sqrt(torch.clamp(torch.sum(angle_agglo ** 2, dim=-1, keepdim=True), min=1e-12))
@@ -91,33 +92,29 @@ def get_atom14_coords(X, S, BB_D, SC_D):
     normalized_angles = angle_agglo / norm_denom
 
     # Make default frames
-    default_frames = torch.tensor(rc.restype_rigid_group_default_frame,
-                                  dtype=torch.float32,
-                                  device=X.device,
-                                  requires_grad=False)
+    default_frames = torch.tensor(rc.restype_rigid_group_default_frame, dtype=torch.float32,
+                                  device=X.device, requires_grad=False)
 
     # Make group ids
-    group_idx = torch.tensor(rc.restype_atom14_to_rigid_group,
-                             device=X.device,
+    group_idx = torch.tensor(rc.restype_atom14_to_rigid_group, device=X.device,
                              requires_grad=False)
 
     # Make atom mask
-    atom_mask = torch.tensor(rc.restype_atom14_mask,
-                             dtype=torch.float32,
-                             device=X.device,
-                             requires_grad=False)
+    atom_mask = torch.tensor(rc.restype_atom14_mask, dtype=torch.float32,
+                             device=X.device, requires_grad=False)
 
     # Make literature positions
-    lit_positions = torch.tensor(rc.restype_atom14_rigid_group_positions,
-                                 dtype=torch.float32,
-                                 device=X.device,
-                                 requires_grad=False)
+    lit_positions = torch.tensor(rc.restype_atom14_rigid_group_positions, dtype=torch.float32,
+                                 device=X.device, requires_grad=False)
 
     # Make all global frames
     all_frames_to_global = torsion_angles_to_frames(bb_to_global, normalized_angles, S, default_frames)
 
     # Predict coordinates
-    pred_xyz = frames_and_literature_positions_to_atom14_pos(all_frames_to_global, S, default_frames, group_idx,
+    pred_xyz = frames_and_literature_positions_to_atom14_pos(all_frames_to_global, S, default_frames, group_idx, 
                                                              atom_mask, lit_positions)
+    
+    # Replace backbone atoms with input coordinates
+    pred_xyz[..., :4, :] = X[..., :4, :]
 
     return pred_xyz
