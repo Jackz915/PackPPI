@@ -155,9 +155,9 @@ def between_residue_clash_loss(
             * atom14_atom_exists[..., None, :, None, :]
     ).type(fp_type)
 
-    # Backbone-backbone clashes are ignored. CB is included in the backbone.
+    # Backbone-backbone clashes are ignored.
     bb_bb_mask = torch.zeros_like(dists_mask)
-    bb_bb_mask[..., :5, :5] = 1.0
+    bb_bb_mask[..., :4, :4] = 1.0
     dists_mask = dists_mask * (1.0 - bb_bb_mask)
 
     # Mask out all the duplicate entries in the lower triangular matrix.
@@ -371,7 +371,7 @@ def compute_residue_clash(batch,
     
     #     per_atom_clash = (clash_info["between_residues"]["clashes_per_atom_loss_sum"] * sc_atom14_mask +
     #                       clash_info["within_residues"]["per_atom_loss_sum"] * sc_atom14_mask)  # [B, N, 14]
-    #     per_atom_clash[..., :5] = 0
+    #     per_atom_clash[..., :4] = 0
     #     per_residue_clash = torch.sum(per_atom_clash, dim=(-1))
     #     sc_clash.append((per_residue_clash / (self.eps + residue_atoms)).unsqueeze(-1))
     
