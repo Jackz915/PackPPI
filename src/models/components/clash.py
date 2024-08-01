@@ -50,9 +50,9 @@ def within_residue_violations(
         * dists_masks
     )
 
-    # Backbone-backbone clashes are ignored. CB is included in the backbone.
+    # Backbone-backbone clashes are ignored.
     bb_bb_mask = torch.zeros_like(dists_masks)
-    bb_bb_mask[..., :5, :5] = 1.0
+    bb_bb_mask[..., :4, :4] = 1.0
     dists_masks = dists_masks * (1.0 - bb_bb_mask)
 
     # Distance matrix
@@ -340,7 +340,7 @@ def compute_residue_clash(batch,
 
     # mask the backbone atom and get per_residue_atoms
     atom_mask_modified = batch.atom_mask.clone()  # [B, N, 14]
-    atom_mask_modified[..., :5] = 0
+    atom_mask_modified[..., :4] = 0
     per_residue_atoms = torch.sum(atom_mask_modified, dim=(-1))  # [B, N]
 
     # get atom14_coords
