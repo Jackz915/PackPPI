@@ -171,14 +171,23 @@ python src/proximal_optimize.py --input temp/structure.pdb \
 ----- Finishing optimize! -----
 ```
 
-|---|----|-----|------|---|----|-----|-----|--------|      |---|-----|-----|-------|---|-----|-----|------|--------|
-| A | 51 | ASP | OD1  | A | 54 | ARG | NH1 | :1.349 |      | B | 128 | ILE | O     | B | 129 | ASP | HB2  | :0.960 |
-| D | 61 | ARG | NH1  | D | 71 | GLU | HG3 | :1.255 |      | A | 42  | LEU | HD21  | A | 60  | GLU | HG3  | :0.858 |
-| B | 37 | ARG | NE   | B | 64 | ASP | OD1 | :1.172 |      | B | 18  | VAL | HG12  | B | 37  | ARG | HH22 | :0.838 |
-| B | 18 | VAL | HG21 | B | 22 | TRP | CD1 | :1.117 |      | B | 97  | THR | HG21  | C | 35  | ILE | HD11 | :0.793 |
-| D | 58 | ARG | HH22 | D | 61 | ARG | NH2 | :1.115 |      | B | 11  | ALA | O     | B | 43  | ARG | O    | :0.793 |
+|      Top 5 Bad Clashes >= 0.4 (input structure)   |
+|---|----|-----|------|---|----|-----|-----|--------|      
+| A | 51 | ASP | OD1  | A | 54 | ARG | NH1 | :1.349 |  
+| D | 61 | ARG | NH1  | D | 71 | GLU | HG3 | :1.255 |   
+| B | 37 | ARG | NE   | B | 64 | ASP | OD1 | :1.172 |  
+| B | 18 | VAL | HG21 | B | 22 | TRP | CD1 | :1.117 |     
+| D | 58 | ARG | HH22 | D | 61 | ARG | NH2 | :1.115 |  
 
-|      Top 5 Bad Clashes >= 0.4 (input structure)   |      |      Top 5 Bad Clashes >= 0.4 (optimized structure)   |
+
+|      Top 5 Bad Clashes >= 0.4 (optimized structure)   |
+|---|-----|-----|-------|---|-----|-----|------|--------|
+| B | 128 | ILE | O     | B | 129 | ASP | HB2  | :0.960 |
+| A | 42  | LEU | HD21  | A | 60  | GLU | HG3  | :0.858 |
+| B | 18  | VAL | HG12  | B | 37  | ARG | HH22 | :0.838 |
+| B | 97  | THR | HG21  | C | 35  | ILE | HD11 | :0.793 |
+| B | 11  | ALA | O     | B | 43  | ARG | O    | :0.793 |
+
 
 ### Prediction of mutation effect on binding affinity (PackPPI-AP)
 - Train model with default configuration:
