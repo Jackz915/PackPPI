@@ -171,7 +171,6 @@ python src/proximal_optimize.py --input temp/structure.pdb \
 ----- Finishing optimize! -----
 ```
 
-|      Top 5 Bad Clashes >= 0.4 (input structure)   |
 |---|----|-----|------|---|----|-----|-----|--------|      
 | A | 51 | ASP | OD1  | A | 54 | ARG | NH1 | :1.349 |  
 | D | 61 | ARG | NH1  | D | 71 | GLU | HG3 | :1.255 |   
@@ -180,7 +179,6 @@ python src/proximal_optimize.py --input temp/structure.pdb \
 | D | 58 | ARG | HH22 | D | 61 | ARG | NH2 | :1.115 |  
 
 
-|      Top 5 Bad Clashes >= 0.4 (optimized structure)   |
 |---|-----|-----|-------|---|-----|-----|------|--------|
 | B | 128 | ILE | O     | B | 129 | ASP | HB2  | :0.960 |
 | A | 42  | LEU | HD21  | A | 60  | GLU | HG3  | :0.858 |
