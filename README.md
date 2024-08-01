@@ -122,6 +122,59 @@ For larger protein structures (e.g., larger than **1500** amino acids), you may 
 In such cases, consider switching to CPU, although this will increase the runtime.
 
 
+### Proximal optimization (PackPPI-Prox)
+The `src/proximal_optimize` script is used to reduce the atomic conflicts that appear in the side-chain structure.
+
+``` bash
+python src/proximal_optimize.py -h
+
+"""
+usage: proximal_optimize.py [-h] --input INPUT --outdir OUTDIR --molprobity_clash_loc MOLPROBITY_CLASH_LOC [--violation_tolerance_factor VIOLATION_TOLERANCE_FACTOR]
+                            [--clash_overlap_tolerance CLASH_OVERLAP_TOLERANCE] [--lamda LAMDA] [--num_steps NUM_STEPS]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --input INPUT         The input pdb file path.
+  --outdir OUTDIR       Directory to store outputs.
+  --molprobity_clash_loc MOLPROBITY_CLASH_LOC
+                        Path to /build/bin/molprobity.clashscore.
+  --violation_tolerance_factor VIOLATION_TOLERANCE_FACTOR
+                        The violation tolerance factor.
+  --clash_overlap_tolerance CLASH_OVERLAP_TOLERANCE
+                        Acceptable deviation between atoms.
+  --lamda LAMDA         The influence of the proximal term on the gradient.
+  --num_steps NUM_STEPS
+                        Number of optimize steps.
+
+"""
+```
+
+- Example:
+``` bash
+python src/eval_diffusion.py --input data/6ere.pdb \
+                             --outdir temp \
+                             --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \
+                             --device cuda
+
+python src/proximal_optimize.py --input temp/structure.pdb \
+                             --outdir temp1 \
+                             --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \
+                             --violation_tolerance_factor 12
+                             --clash_overlap_tolerance .1
+                             --lamda 1
+                             --num_steps 50
+
+# Output
+----- Starting optimize! -----
+----- The input structure clashscore is 19.91 -----
+----- The optimized structure clashscore is 12.03 -----
+----- Finishing optimize! -----
+```
+
+
+
+
+
 ### Prediction of mutation effect on binding affinity (PackPPI-AP)
 - Train model with default configuration:
 
