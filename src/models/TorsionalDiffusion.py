@@ -330,8 +330,6 @@ class TDiffusionModule(LightningModule):
             metric[f"chi_{i}_acc"] = chi_acc.sum() / chi_num
 
         predict_coords = get_atom14_coords(batch.X, batch.residue_type, batch.BB_D, SC_D_sample)
-        predict_coords[..., :5, :] = batch.X[..., :5, :]
-
         metric["atom_rmsd"] = self.compute_rmsd(batch.X, predict_coords, batch.atom_mask, batch.residue_mask)
         return metric
 
