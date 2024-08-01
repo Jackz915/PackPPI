@@ -171,17 +171,18 @@ python src/proximal_optimize.py --input temp/structure.pdb \
 ----- Finishing optimize! -----
 ```
 
-| chain | index | residue | atom | chain | index | residue | atom | clashscore |     
-| ----- | ----- | ------- | ---- | ----- | ----- | --------| ---- | ---------- |  
+Top 5 Bad Clashes >= 0.4 (input structure)
+| chain1 | index1 | residue1 | atom1 | chain2 | index2 | residue2 | atom2 | clashscore |     
+| ------ | ------ | -------- | ----- | ------ | ------ | ---------| ----- | ---------- |  
 | A | 51 | ASP | OD1  | A | 54 | ARG | NH1 | :1.349 |  
 | D | 61 | ARG | NH1  | D | 71 | GLU | HG3 | :1.255 |   
 | B | 37 | ARG | NE   | B | 64 | ASP | OD1 | :1.172 |  
 | B | 18 | VAL | HG21 | B | 22 | TRP | CD1 | :1.117 |     
 | D | 58 | ARG | HH22 | D | 61 | ARG | NH2 | :1.115 |  
 
-
-| chain | index | residue | atom | chain | index | residue | atom | clashscore |     
-| ----- | ----- | ------- | ---- | ----- | ----- | --------| ---- | ---------- |  
+Top 5 Bad Clashes >= 0.4 (optimized structure)
+| chain1 | index1 | residue1 | atom1 | chain2 | index2 | residue2 | atom2 | clashscore |     
+| ------ | ------ | -------- | ----- | ------ | ------ | ---------| ----- | ---------- |  
 | B | 128 | ILE | O     | B | 129 | ASP | HB2  | :0.960 |
 | A | 42  | LEU | HD21  | A | 60  | GLU | HG3  | :0.858 |
 | B | 18  | VAL | HG12  | B | 37  | ARG | HH22 | :0.838 |
