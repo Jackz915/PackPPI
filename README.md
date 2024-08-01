@@ -179,7 +179,26 @@ python src/proximal_optimize.py --input temp/structure.pdb \
 | B | 18 | VAL | HG21 | B | 22 | TRP | CD1 | :1.117 |      | B | 97  | THR | HG21  | C | 35  | ILE | HD11 | :0.793 |
 | D | 58 | ARG | HH22 | D | 61 | ARG | NH2 | :1.115 |      | B | 11  | ALA | O     | B | 43  | ARG | O    | :0.793 |
 
-
+|AA Name | SCWRL4 | Rosetta Packer | DLPacker|
+|:------:|:------:|:--------------:|:-------:|
+|  Arg   |  2.07  |      1.84      |   1.44  |
+|  Lys   |  1.54  |      1.40      |   1.21  |
+|  Phe   |  0.67  |      0.53      |   0.32  |
+|  Tyr   |  0.83  |      0.68      |   0.38  |
+|  Trp   |  1.27  |      0.96      |   0.46  |
+|  His   |  1.18  |      1.05      |   0.81  |
+|  Glu   |  1.34  |      1.26      |   1.02  |
+|  Gln   |  1.43  |      1.24      |   1.09  |
+|  Met   |  1.08  |      0.91      |   0.76  |
+|  Asn   |  0.88  |      0.80      |   0.65  |
+|  Asp   |  0.68  |      0.65      |   0.47  |
+|  Ser   |  0.59  |      0.52      |   0.36  |
+|  Leu   |  0.49  |      0.45      |   0.36  |
+|  Thr   |  0.36  |      0.33      |   0.27  |
+|  Ile   |  0.40  |      0.36      |   0.31  |
+|  Cys   |  0.40  |      0.30      |   0.24  |
+|  Val   |  0.24  |      0.23      |   0.19  |
+|  Pro   |  0.21  |      0.19      |   0.14  |
 
 ### Prediction of mutation effect on binding affinity (PackPPI-AP)
 - Train model with default configuration:
