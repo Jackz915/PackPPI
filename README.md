@@ -159,9 +159,9 @@ python src/eval_diffusion.py --input data/6ere.pdb \
 python src/proximal_optimize.py --input temp/structure.pdb \
                              --outdir temp1 \
                              --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \
-                             --violation_tolerance_factor 12
-                             --clash_overlap_tolerance .1
-                             --lamda 1
+                             --violation_tolerance_factor 12 \
+                             --clash_overlap_tolerance .1 \
+                             --lamda 1 \
                              --num_steps 50
 
 # Output
