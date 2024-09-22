@@ -1,7 +1,7 @@
 name: PackPPI
 channels:
   - pytorch
-  - pytorch
+  - nvidia
   - bioconda
   - defaults
   - conda-forge
