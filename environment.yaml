@@ -93,7 +93,6 @@ dependencies:
   - pure_eval=0.2.2=pyhd8ed1ab_0
   - pycparser=2.22=pyhd8ed1ab_0
   - pygments=2.18.0=pyhd8ed1ab_0
-  - pyrosetta=2024.24+release.ca096da=py39_0
   - pysocks=1.7.1=pyha2e5f31_6
   - python=3.9.19=h0755675_0_cpython
   - python_abi=3.9=4_cp39
