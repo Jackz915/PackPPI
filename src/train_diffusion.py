@@ -1,13 +1,13 @@
 import os
 import hydra
-import rootutils
+import pyrootutils
 import pytorch_lightning as pl
 from omegaconf import DictConfig
 from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
 from pytorch_lightning.loggers import Logger
 from typing import List, Optional, Tuple
 
-rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
+pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
 from src import utils
 # os.environ["PL_TORCH_DISTRIBUTED_BACKEND"] = "gloo"
