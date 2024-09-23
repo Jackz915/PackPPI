@@ -111,9 +111,7 @@ dependencies:
       - tensorboard==2.17.0
       - tensorboard-data-server==0.7.2
       - threadpoolctl==3.5.0
-      - torch-cluster==1.6.3+pt20cu117
       - torch-geometric==2.5.3
-      - torch-scatter==2.1.2+pt20cu117
       - torchmetrics==1.4.2
       - torchtyping==0.1.4
       - tqdm==4.66.5
