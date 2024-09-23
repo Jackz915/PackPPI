@@ -2,18 +2,16 @@ import os
 import numpy as np
 import argparse
 from pathlib import Path
-import rootutils
+import pyrootutils
 from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
 from typing import List, Optional, Tuple
 
+pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 from src.models.components.optimize import proximal_optimizer
 from src.models.components import get_atom14_coords
 from src.utils.protein import from_pdb_file, to_pdb
 from src.utils.residue_constants import sidechain_atoms
 from src.utils.protein_analysis import ProteinAnalysis
-
-
-rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
 
 def contains_sidechains(pdb_file: str) -> bool:
