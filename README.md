@@ -28,7 +28,7 @@ conda env create -f environment.yaml
 conda activate PackPPI
 
 # 3. install pytorch and cudatoolkit based on your CUDA version
-conda install pytorch=2.0.1  cudatoolkit=11.7 -c pytorch
+conda install pytorch=2.0.1  cudatoolkit=11.7
 
 # 4. pip install torch_cluster and torch_scatter in py3.9
 wget https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_cluster-1.6.3%2Bpt20cu117-cp39-cp39-linux_x86_64.whl
