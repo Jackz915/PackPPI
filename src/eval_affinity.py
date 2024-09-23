@@ -5,18 +5,16 @@ import torch
 import hydra
 from hydra import compose, initialize
 from hydra.core.hydra_config import HydraConfig
-import rootutils
+import pyrootutils
 import pytorch_lightning as pl
 from omegaconf import OmegaConf, DictConfig
 from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
 from typing import List, Optional, Tuple
 
+pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 from src.models.AffinityPrediction import AffinityPrediction
 from src.datamodules.components.skempi_dataset import SkempiDataset
 from src.utils.protein import from_pdb_file, to_pdb
-
-
-rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
 
 def load_configuration(config_path: str, config_name: str) -> DictConfig:
