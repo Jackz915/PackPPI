@@ -167,7 +167,7 @@ class AffinityPrediction(LightningModule):
                 h_mt = self.get_pret_feature(batch_mt)
 
         ddg_pred = self.ddg_predictor((h_mt - h_wt).max(dim=1)[0]) # mean(dim=1)
-        ddg_pred_inv = self.ddg_predictor((h_mt - h_wt).max(dim=1)[0]) # mean(dim=1)
+        ddg_pred_inv = self.ddg_predictor((h_wt - h_mt).max(dim=1)[0]) # mean(dim=1)
         
         labels = batch['ddg']
         loss = (self.criterion(ddg_pred.squeeze(-1), labels) + self.criterion(ddg_pred_inv.squeeze(-1), -labels)) / 2
