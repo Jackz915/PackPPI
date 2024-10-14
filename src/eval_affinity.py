@@ -34,7 +34,8 @@ def load_model(cfg: DictConfig, device: str) -> LightningModule:
         strict=False,
         encoder_cfg=hydra.utils.instantiate(cfg.model.encoder_cfg),
         model_cfg=hydra.utils.instantiate(cfg.model.model_cfg),
-        sample_cfg=hydra.utils.instantiate(cfg.model.sample_cfg)
+        sample_cfg=hydra.utils.instantiate(cfg.model.sample_cfg),
+        pre_checkpoint_path = cfg.pre_ckpt_path
     )
     return model.to(device).eval()
 
