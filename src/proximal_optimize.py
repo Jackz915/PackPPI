@@ -38,14 +38,20 @@ def main(args: argparse.Namespace):
     batch = protein_analysis.get_prot(args.input)
 
     try:
-        SC_D_resample = proximal_optimizer(batch, batch.SC_D,
-                                           args.violation_tolerance_factor,
-                                           args.clash_overlap_tolerance,
-                                           args.lamda,
-                                           args.num_steps)
+        SC_D_resample_list, loss_list = proximal_optimizer(batch, batch.SC_D,
+                                                           args.violation_tolerance_factor,
+                                                           args.clash_overlap_tolerance,
+                                                           args.lamda,
+                                                           args.num_steps)
+            
     except RuntimeError as e:
         raise e
 
+    if loss_list[-1] < loss_list[0]:
+        SC_D_resample = SC_D_resample_list[-1]
+    else:
+        SC_D_resample = batch.SC_D
+              
     predict_xyz = get_atom14_coords(batch.X, batch.residue_type, batch.BB_D, SC_D_resample)
 
     protein['atom_positions'] = predict_xyz.cpu().squeeze().numpy()
