@@ -8,36 +8,51 @@ import freesasa
 from Bio.PDB import PDBParser as BioParser, Selection, NeighborSearch
 
 
-def get_interface_residues(pdb_file, radius=5.0):
-    """Return a list of interacting residues based on accessibility and distance to partner
+def get_interface_residues(pdb_file, radius=10.0):
+    """
+    Return a list of interacting residues based on accessibility and distance to partner.
 
     :param str pdb_file: PDB file path
-    :param int,float radius: Maximum distance to be considered to define a residue as interacting with another chain
-    :return: interface: Dictionary of interface residues per chain IDs (e.g. {'A':[1,2,3], 'B': [10,11,12], ...}
+    :param int,float radius: Maximum distance to be considered to define a residue as interacting with another chain.
+    :return: Dictionary of interface residues per chain IDs (e.g. {'A': [1, 2, 3], 'B': [10, 11, 12], ...}).
     :rtype: dict
-
     """
-    p = BioParser(QUIET=True)
-    s = p.get_structure('pdb', pdb_file)
-    if sum(1 for _ in s.get_chains()) < 2:
+    parser = PDBParser(QUIET=True)
+    structure = parser.get_structure('pdb', pdb_file)
+
+    # Filter to keep only protein chains (ignore water, ligands, etc.)
+    protein_chains = [chain for chain in structure.get_chains() if any(residue.id[0] == ' ' for residue in chain.get_residues())]
+
+    # If less than two protein chains, return None
+    if len(protein_chains) < 2:
         return None
-    m = s[0]
-    all_atoms = Selection.unfold_entities(m, 'A')
-    # Unfold atoms for NeighborSearch algorithm to work
-    ns = NeighborSearch(all_atoms)
+
+    # Use the first model
+    model = structure[0]
+
+    # Unfold atoms for NeighborSearch algorithm to work, only from protein chains
+    protein_atoms = [atom for chain in protein_chains for atom in chain.get_atoms()]
+    ns = NeighborSearch(protein_atoms)
     interface = ns.search_all(radius, "R")
+
     # Filter redundant residues
-    buffer = dict([(ch_id.id, []) for ch_id in m.get_chains()])
+    buffer = {chain.id: [] for chain in protein_chains}
     for r in interface:
-        if r[0].parent.id != r[1].parent.id:
-            if r[0].id[1] not in buffer[r[0].parent.id]:
-                buffer[r[0].parent.id].append(r[0].id[1])
-            if r[1].id[1] not in buffer[r[1].parent.id]:
-                buffer[r[1].parent.id].append(r[1].id[1])
-    interface = buffer
-    for ch_id in m.get_chains():
-        interface[ch_id.id] = sorted(interface[ch_id.id])
-    return interface
+        chain_id_0 = r[0].parent.id
+        chain_id_1 = r[1].parent.id
+
+        # Ensure interacting residues are from different chains and are protein chains
+        if chain_id_0 in buffer and chain_id_1 in buffer and chain_id_0 != chain_id_1:
+            if r[0].id[1] not in buffer[chain_id_0]:
+                buffer[chain_id_0].append(r[0].id[1])
+            if r[1].id[1] not in buffer[chain_id_1]:
+                buffer[chain_id_1].append(r[1].id[1])
+
+    # Sort residues within each chain
+    for chain_id in buffer:
+        buffer[chain_id] = sorted(buffer[chain_id])
+
+    return buffer
 
 
 def extract_interface(protein: Dict, chain_main: str, outdir: Path):
