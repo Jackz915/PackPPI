@@ -133,7 +133,7 @@ class SkempiDataModule(LightningDataModule):
         }
         
         with open(self.split_file, 'wb') as f:
-            pickle.dump(data_splits, f)
+           pickle.dump(data_splits, f)
 
         return data_splits
 
