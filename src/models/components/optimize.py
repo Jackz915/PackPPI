@@ -54,7 +54,8 @@ def proximal_optimizer(batch, SC_D,
     
     # List to store the results at each step
     SC_D_resample_list = []
-
+    loss_list = []
+    
     # Run optimizer for multiple steps
     for _ in range(num_steps):
         optimizer.zero_grad()
@@ -67,10 +68,6 @@ def proximal_optimizer(batch, SC_D,
         SC_D_resample_clone = SC_D_resample.detach().clone()
         SC_D_resample_clone = torch.where(SC_D_clash_mask, SC_D_resample_clone, SC_D)
         SC_D_resample_list.append(SC_D_resample_clone)
-    
-    final_loss = loss.item()
+        loss_list.append(loss.item())
 
-    if final_loss < initial_loss:
-        return SC_D_resample_list[-1]
-    else:
-        return SC_D.detach() # Return the initial sample for all steps if no improvement
+    return SC_D_resample_list, loss_list
