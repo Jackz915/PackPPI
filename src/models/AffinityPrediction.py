@@ -15,6 +15,8 @@ from src.models.TorsionalDiffusion import TDiffusionModule
 log = get_pylogger(__name__)
 
 
+
+
 class AffinityPrediction(LightningModule):
     def __init__(
             self,
@@ -72,10 +74,16 @@ class AffinityPrediction(LightningModule):
                 embedding_dim = self.hparams.model_cfg.hidden_dim,
                 padding_idx = 0,
             )
-            
+
+            self.seq_embedding = nn.Embedding(21, self.hparams.model_cfg.hidden_dim)
+        
             self.mutation_fusion = nn.Sequential(
-                nn.Linear(2*self.hparams.model_cfg.hidden_dim, self.hparams.model_cfg.hidden_dim), nn.ReLU(),
-                nn.Linear(self.hparams.model_cfg.hidden_dim, self.hparams.model_cfg.hidden_dim)
+                nn.Linear(3 * self.hparams.model_cfg.hidden_dim, self.hparams.model_cfg.hidden_dim),
+                nn.ReLU(),
+                # nn.Dropout(0.1),  
+                nn.Linear(self.hparams.model_cfg.hidden_dim, self.hparams.model_cfg.hidden_dim),
+                # nn.ReLU(),
+                # nn.Dropout(0.1)  
             )
                 
         self.ddg_predictor = nn.Sequential(
@@ -95,7 +103,23 @@ class AffinityPrediction(LightningModule):
 
         self.train_loss = torchmetrics.MeanMetric()
         self.val_loss = torchmetrics.MeanMetric()
-
+        
+    @torch.no_grad()
+    def get_pret_feature(self, batch):
+        t = torch.tensor([0.],
+                         requires_grad=False).repeat_interleave(batch.num_proteins * batch.max_size).to(self.device)
+        _, h_V_pret = self.pret_network(batch, batch.SC_D, t)
+        # h_V_pret, _, _, _ = self.pret_encoder(batch.X,
+        #                                   batch.residue_type,
+        #                                   batch.BB_D_sincos,
+        #                                   batch.SC_D_sincos,
+        #                                   batch.chain_indices,
+        #                                   batch.residue_mask,
+        #                                   batch.residue_index,
+        #                                   t)
+        
+        return h_V_pret
+        
     def get_local_subgraph(self, X, mut_mask, radius=10):
         batch_size, num_residues, num_atoms = X.shape
     
@@ -119,12 +143,6 @@ class AffinityPrediction(LightningModule):
     
         return local_mask
         
-    @torch.no_grad()
-    def get_pret_feature(self, batch):
-        t = torch.tensor([0.],
-                         requires_grad=False).repeat_interleave(batch.num_proteins * batch.max_size).to(self.device)
-        _, h_V_pret = self.pret_network(batch, batch.SC_D, t)
-        return h_V_pret
 
     def encode(self, batch):    
         X_ca = batch.X[:, :, 1, :]
@@ -140,7 +158,8 @@ class AffinityPrediction(LightningModule):
                                                             batch.residue_index)
 
         h_V_pret = self.get_pret_feature(batch)
-        h_V = self.mutation_fusion(torch.cat([h_V_pret, h_V_mutation], dim=-1))
+        S = self.seq_embedding(batch['residue_type'])
+        h_V = self.mutation_fusion(torch.cat([h_V_pret, h_V_mutation, S], dim=-1))
 
         bias = self.mut_bias(batch['mut_mask'])
         h_V = h_V + bias
@@ -165,9 +184,9 @@ class AffinityPrediction(LightningModule):
             else:
                 h_wt = self.get_pret_feature(batch)
                 h_mt = self.get_pret_feature(batch_mt)
-
-        ddg_pred = self.ddg_predictor((h_mt - h_wt).max(dim=1)[0]) # mean(dim=1)
-        ddg_pred_inv = self.ddg_predictor((h_wt - h_mt).max(dim=1)[0]) # mean(dim=1)
+        
+        ddg_pred = self.ddg_predictor((h_mt - h_wt).max(dim=1)[0]) # mean(dim=1) max(dim=1)[0]
+        ddg_pred_inv = self.ddg_predictor((h_wt - h_mt).max(dim=1)[0]) # mean(dim=1) max(dim=1)[0]
         
         labels = batch['ddg']
         loss = (self.criterion(ddg_pred.squeeze(-1), labels) + self.criterion(ddg_pred_inv.squeeze(-1), -labels)) / 2
