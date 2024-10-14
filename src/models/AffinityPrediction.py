@@ -25,6 +25,7 @@ class AffinityPrediction(LightningModule):
             encoder_cfg: DictConfig,
             model_cfg: DictConfig,
             sample_cfg: DictConfig,
+            pre_checkpoint_path,
             **kwargs
     ):
         super().__init__()
@@ -36,7 +37,7 @@ class AffinityPrediction(LightningModule):
             raise ValueError(f"Invalid mode '{self.hparams.mode}'. Valid modes are: {self.valid_modes}.")
 
         if self.hparams.mode in ["network", "linear"]:
-            self.pret = TDiffusionModule.load_from_checkpoint(checkpoint_path=self.hparams.ckpt_path,
+            self.pret = TDiffusionModule.load_from_checkpoint(checkpoint_path=self.hparams.pre_checkpoint_path,
                                                               map_location=self.device,
                                                               strict=False,
                                                               encoder_cfg=hydra.utils.instantiate(self.hparams.encoder_cfg),
