@@ -260,4 +260,3 @@ class SkempiDataset(Dataset):
                 torch.save(protein_data, str(protein_data_filepath))
 
         return protein_data
-
