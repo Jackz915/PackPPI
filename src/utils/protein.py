@@ -147,6 +147,25 @@ def from_pdb_string(pdb_str: str, model_idx: int = 0, chain_id: Optional[Union[s
             chain_ids.append(chain.id)
             b_factors.append(res_b_factors)
 
+    assert len(residue_index) == len(chain_ids), "Length of residue_index and chain_id must be equal."
+    used_indices = {}
+    new_residue_indices = []
+    
+    for idx in range(len(residue_index)):
+        chain = chain_ids[idx]
+        index = residue_index[idx]
+    
+        if chain not in used_indices:
+            used_indices[chain] = set()  
+        
+        new_index = index
+        while new_index in used_indices[chain]:
+            new_index += 1
+        
+        new_residue_indices.append(new_index)
+        used_indices[chain].add(new_index)
+    
+
     # Chain IDs are usually characters so map these to ints.
     # unique_chain_ids = np.unique(chain_ids)
     # chain_id_mapping = {cid: n for n, cid in enumerate(unique_chain_ids)}
@@ -156,7 +175,7 @@ def from_pdb_string(pdb_str: str, model_idx: int = 0, chain_id: Optional[Union[s
         atom_positions=np.array(atom_positions),
         atom_mask=np.array(atom_mask),
         aaindex=np.array(aaindex),
-        residue_index=np.array(residue_index),
+        residue_index=np.array(new_residue_indices),
         chain_id=np.array(chain_ids),
         b_factors=np.array(b_factors)
     )
@@ -236,6 +255,7 @@ def to_pdb(prot: Union[Protein, dict], keep_chains: Optional[list] = None) -> st
     atom_index = 1
     last_chain_index = chain_id[0]
     # Add all atom sites.
+
     for i in range(aaindex.shape[0]):
         # Close the previous chain if in a multichain PDB.
         if last_chain_index != chain_id[i]:
