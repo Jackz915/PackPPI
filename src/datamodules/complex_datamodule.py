@@ -222,7 +222,7 @@ def collate_fn(protein_batch):
         chi_2pi_periodic_mask=torch.stack([_maybe_pad(protein, "chi_2pi_periodic_mask") for protein in protein_batch]),
         # [B, L, 4]
     )
-
+    
     return batch
 
 
