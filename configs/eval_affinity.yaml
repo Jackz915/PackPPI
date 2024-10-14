@@ -22,3 +22,4 @@ seed: 42
   
 # passing checkpoint path is necessary for sampling and evaluation
 ckpt_path: "/path/to/PackPPI_affinity_fold0/1/2.ckpt"
+pre_ckpt_path: "/path/to/PackPPI_affinity_fold0/1/2.ckpt"
