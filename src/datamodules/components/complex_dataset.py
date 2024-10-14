@@ -148,4 +148,3 @@ class ComplexDataset(Dataset):
         return protein_data
 
 
-
