@@ -5,7 +5,7 @@ from itertools import combinations
 from typing import List, Dict, Tuple
 from src.utils.protein import to_pdb
 import freesasa
-from Bio.PDB import PDBParser as BioParser, Selection, NeighborSearch
+from Bio.PDB import PDBParser, NeighborSearch, Selection
 
 
 def get_interface_residues(pdb_file, radius=10.0):
