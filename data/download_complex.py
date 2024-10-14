@@ -7,6 +7,7 @@ import shutil
 import tarfile
 import zipfile
 import tempfile
+import pickle
 from requests import HTTPError
 from pathlib import Path
 from tqdm import tqdm
@@ -17,10 +18,14 @@ PDB_RCSB = "rc"
 PDB_RCSB_DOWNLOAD_URL_TEMPLATE = r"https://files.rcsb.org/download/{pdb_code}.pdb.gz"
 PDB_REDO = "re"
 PDB_REDO_DOWNLOAD_URL_TEMPLATE = "https://pdb-redo.eu/db/{pdb_code}/{pdb_code}_final.pdb"
+PDB_mmCIF = "cif"
+PDB_mmCIF_DOWNLOAD_URL_TEMPLATE = r"https://files.rcsb.org/download/{pdb_code}.cif.gz"
+
 
 PDB_DOWNLOAD_SOURCES = {
     PDB_RCSB: PDB_RCSB_DOWNLOAD_URL_TEMPLATE,
     PDB_REDO: PDB_REDO_DOWNLOAD_URL_TEMPLATE,
+    PDB_mmCIF: PDB_mmCIF_DOWNLOAD_URL_TEMPLATE
 }
 
 
@@ -33,73 +38,74 @@ class PdbCodeFetcher:
         self.complex_QS40_url = 'https://shmoo.weizmann.ac.il/elevy/3dcomplexV6/dataV6/files/NRX_0_5_40_topo_label_compo.txt'
         self.PP_complex_file = 'INDEX_general_PP.2020'
 
-        # pdb-code for fine-tuned
+        # pdb-code for mutation-training
         self.skempi_url = 'https://life.bsc.es/pid/skempi2/database/download/skempi_v2.csv'
 
-        # ecod-based complex screening based on T/F group
         self.ecod_url = 'https://raw.githubusercontent.com/rcsb/py-rcsb_exdb_assets/master/fall_back/ECOD/ecod.latest.domains.txt.gz'
-        self.ecod_tfgroup_dict = self.load_ecod_dict()
+        self.ecod_group_dict = self.load_ecod_dict()
 
     def get_final_code(self):
-        pdbbind_codes, complex_codes, fine_codes = (set(self.get_pdbbind_code()),
-                                                    set(self.get_3dcomplex_code()),
-                                                    set(self.get_skempi_code()))
-        merged_set = set()
-        for lst in [self.get_tfgroup(fine_code) for fine_code in fine_codes]:
-            merged_set.update(lst)
+        pdbbind_codes, complex_codes, skempi_codes = (set(self.get_pdbbind_code()),
+                                                        set(self.get_3dcomplex_code()),
+                                                        set(self.get_skempi_code()))
+        skempi_set = set()
+        for lst in [self.get_group(skempi_code) for skempi_code in skempi_codes]:
+            skempi_set.update(lst)
 
-        pre_codes = list((pdbbind_codes | complex_codes) - fine_codes)
+        pre_codes = list((pdbbind_codes | complex_codes) - skempi_codes)
 
         final_codes = []
         for pre_code in pre_codes:
-            if not self.get_tfgroup(pre_code):
+            if not self.get_group(pre_code):
                 continue
             else:
-                if not set(self.get_tfgroup(pre_code)) & merged_set:
+                if not set(self.get_group(pre_code)) & skempi_set:
                     final_codes.append(pre_code)
                 else:
                     continue
         return final_codes
 
-    def get_tfgroup(self, pdb_code):
+    def get_group(self, pdb_code):
         try:
-            return self.ecod_tfgroup_dict[pdb_code]
+            return self.ecod_group_dict[pdb_code]
         except Exception as e:
-            # print(f"Failing to get T/F group for {pdb_code}: {e}")
             return []
 
     def load_ecod_dict(self):
         save_path = Path(self.tmp_dir, self.ecod_url.split('/')[-1])
         remote_dl(self.ecod_url, str(save_path), uncompress=True)
 
-        ecod_tfgroup_dict = {}
+        ecod_group_dict = {}
         with open(save_path, "r") as f:
             lines = f.readlines()[6:]  # start by line 6
             """
-            #/data/ecod/database_versions/v280/ecod.develop280.domains.txt
-            #ECOD version develop280
+            #/data/ecod/database_versions/v288/ecod.develop288.domains.txt
+            #ECOD version develop288
             #Domain list version 1.6
             #Grishin lab (http://prodata.swmed.edu/ecod)
-            #uid	ecod_domain_id	manual_rep	f_id	pdb	chain	pdb_range	seqid_range	unp_acc	arch_name	x_name	h_name	t_name	f_name
-            002728551	e7d2xA1	AUTO_NONREP	1.1.1	7d2x	A	A:-3-183	A:20-206	NO_UNP	beta barrels	"cradle loop barrel"	"RIFT-related"	"acid protease"	F_UNCLASSIFIED
-            002728572	e7d5aA2	AUTO_NONREP	1.1.1	7d5a	A	A:-3-183	A:20-206	NO_UNP	beta barrels	"cradle loop barrel"	"RIFT-related"	"acid protease"	F_UNCLASSIFIED
-            002726563	e7b1eA1	AUTO_NONREP	1.1.1	7b1e	A	A:46P-183	A:14-199	NO_UNP	beta barrels	"cradle loop barrel"	"RIFT-related"	"acid protease"	F_UNCLASSIFIED
-            002726573	e7b1pA2	AUTO_NONREP	1.1.1	7b1p	A	A:47P-183	A:15-199	NO_UNP	beta barrels	"cradle loop barrel"	"RIFT-related"	"acid protease"	F_UNCLASSIFIED
+            #uid	ecod_domain_id	manual_rep	f_id	pdb	chain	pdb_range	seqid_range	unp_acc	arch_name	x_name	h_name	t_name	f_name	asm_status	ligand
+            002990950	e8esyA1	AUTO_NONREP	1.1.1	8esy	A	A:1-99	A:1-99	NO_UNP	beta barrels	"cradle loop barrel"	"RIFT-related"	"acid protease"	F_UNCLASSIFIED	NOT_DOMAIN_ASSEMBLY	NO_LIGANDS_4A
+            002990951	e8esyB1	AUTO_NONREP	1.1.1	8esy	B	B:101-199	B:1-99	NO_UNP	beta barrels	"cradle loop barrel"	"RIFT-related"	"acid protease"	F_UNCLASSIFIED	NOT_DOMAIN_ASSEMBLY	NO_LIGANDS_4A
+            003008423	e7wbsA1	AUTO_NONREP	1.1.1	7wbs	A	A:1-99	A:1-99	NO_UNP	beta barrels	"cradle loop barrel"	"RIFT-related"	"acid protease"	F_UNCLASSIFIED	NOT_DOMAIN_ASSEMBLY	NO_LIGANDS_4A
+            003008424	e7wbsB1	AUTO_NONREP	1.1.1	7wbs	B	B:1-99	B:1-99	NO_UNP	beta barrels	"cradle loop barrel"	"RIFT-related"	"acid protease"	F_UNCLASSIFIED	NOT_DOMAIN_ASSEMBLY	NO_LIGANDS_4A
+            003008503	e7wcqA1	AUTO_NONREP	1.1.1	7wcq	A	A:1-99	A:1-99	NO_UNP	beta barrels	"cradle loop barrel"	"RIFT-related"	"acid protease"	F_UNCLASSIFIED	NOT_DOMAIN_ASSEMBLY	NO_LIGANDS_4A
             """
 
             print("Length of input ECOD name list", len(lines))
             for line in lines:
                 ll = line.split("\t")
                 entryId = ll[4].lower()
+                hGroup = ll[11].replace('"', "")
                 tGroup = ll[12].replace('"', "")
                 fGroup = ll[13].replace('"', "")
-                Group = tGroup + "|" + fGroup
+                Group = hGroup + "|" + tGroup
 
-                if entryId not in ecod_tfgroup_dict:
-                    ecod_tfgroup_dict[entryId] = [Group]
+                if entryId not in ecod_group_dict:
+                    ecod_group_dict[entryId] = [Group]
                 else:
-                    ecod_tfgroup_dict[entryId].append(Group)
-        return ecod_tfgroup_dict
+                    ecod_group_dict[entryId].append(Group)
+        #print(ecod_group_dict['8esy'])
+        return ecod_group_dict
 
     def get_skempi_code(self):
         save_path = Path(self.tmp_dir, self.skempi_url.split('/')[-1])
@@ -164,7 +170,10 @@ def pdb_download(pdb_code, pdb_dir, pdb_source):
             f"Unknown {pdb_source=}, must be one of {tuple(PDB_DOWNLOAD_SOURCES)}"
         )
     download_url_template = PDB_DOWNLOAD_SOURCES[pdb_source]
-    filename = os.path.join(pdb_dir, f"{pdb_code}_{pdb_source}.pdb".lower())
+    if pdb_source == 'cif':
+        filename = os.path.join(pdb_dir, f"{pdb_code}.cif".lower())
+    else:    
+        filename = os.path.join(pdb_dir, f"{pdb_code}_{pdb_source}.pdb".lower())
     download_url = download_url_template.format(pdb_code=pdb_code).lower()
 
     uncompress = download_url.endswith(("gz", "gzip", "zip"))
@@ -259,7 +268,6 @@ if __name__ == "__main__":
 
     print(f"Created pdb directory: {pdb_dir}")
     parallel_download(final_codes, pdb_dir, args.pdb_source, args.max_workers)
-    
     print("Done with downloading PDBs!")
 
     if args.clean_up:
