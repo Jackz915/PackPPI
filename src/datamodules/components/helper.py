@@ -167,3 +167,5 @@ def get_esm_feature(sequence,
     protein_representations = torch.cat(protein_representations, dim=0)
 
     return protein_representations
+
+
