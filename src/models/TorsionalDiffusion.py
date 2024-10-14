@@ -282,13 +282,20 @@ class TDiffusionModule(LightningModule):
         if not use_proximal:
             return SC_D_sample
 
-        SC_D_resample = proximal_optimizer(batch, SC_D_sample,
-                                           self.hparams.sample_cfg.violation_tolerance_factor,
-                                           self.hparams.sample_cfg.clash_overlap_tolerance,
-                                           self.hparams.sample_cfg.lamda,
-                                           self.hparams.sample_cfg.num_steps)
-        
-        return SC_D_resample
+        else:
+            SC_D_resample_list, loss_list = proximal_optimizer(batch, SC_D_sample,
+                                                               self.hparams.sample_cfg.violation_tolerance_factor,
+                                                               self.hparams.sample_cfg.clash_overlap_tolerance,
+                                                               self.hparams.sample_cfg.lamda,
+                                                               self.hparams.sample_cfg.num_steps)
+
+            if return_list:
+                return SC_D_sample, SC_D_resample_list, loss_list
+
+        if loss_list[-1] < loss_list[0]:
+            return SC_D_resample_list[-1]
+            
+        return SC_D_sample
 
     def compute_rmsd(self, true_coords, pred_coords, atom_mask, residue_mask):
         per_atom_sq_err = torch.sum((true_coords - pred_coords) ** 2, dim=-1) * atom_mask * residue_mask[..., None]
