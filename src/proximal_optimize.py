@@ -73,7 +73,7 @@ if __name__ == '__main__':
     parser.add_argument('--molprobity_clash_loc', type=str, help='Path to /build/bin/molprobity.clashscore.', required=True)
     parser.add_argument('--violation_tolerance_factor', type=float, help='The violation tolerance factor.', default=12)
     parser.add_argument('--clash_overlap_tolerance', type=float, help='Acceptable deviation between atoms.', default=0.5)
-    parser.add_argument('--lamda', type=int, help='The influence of the proximal term on the gradient.', default=1)
+    parser.add_argument('--lamda', type=float, help='The influence of the proximal term on the gradient.', default=1)
     parser.add_argument('--num_steps', type=int, help='Number of optimize steps.', default=50)
     args = parser.parse_args()
 
