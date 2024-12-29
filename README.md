@@ -83,34 +83,34 @@ optional arguments:
 
 - Example:
 ``` bash
-python src/eval_diffusion.py --input data/6ere.pdb \
+python src/eval_diffusion.py --input data/T1124_lig.pdb \
                              --outdir temp \
                              --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \
                              --device cuda
 
 # Output
-{'chi_0_ae_rad': tensor(0.2468), 'chi_0_ae_deg': tensor(14.1410), 'chi_0_acc': tensor(0.7935),
-'chi_1_ae_rad': tensor(0.3722), 'chi_1_ae_deg': tensor(21.3241), 'chi_1_acc': tensor(0.5446),
-'chi_2_ae_rad': tensor(0.7627), 'chi_2_ae_deg': tensor(43.7001), 'chi_2_acc': tensor(0.3306),
-'chi_3_ae_rad': tensor(1.0014), 'chi_3_ae_deg': tensor(57.3753), 'chi_3_acc': tensor(0.2222),
-'atom_rmsd': tensor(0.8681), 'total_acc': tensor(0.4727), 'interface_acc': tensor(0.4035),
-'clashscore': 19.47}
+{'chi_0_ae_rad': tensor(0.2101), 'chi_0_ae_deg': tensor(12.0376), 'chi_0_acc': tensor(0.8453),
+'chi_1_ae_rad': tensor(0.2606), 'chi_1_ae_deg': tensor(14.9303), 'chi_1_acc': tensor(0.6806),
+'chi_2_ae_rad': tensor(0.7816), 'chi_2_ae_deg': tensor(44.7812), 'chi_2_acc': tensor(0.4236),
+'chi_3_ae_rad': tensor(1.0006), 'chi_3_ae_deg': tensor(57.3284), 'chi_3_acc': tensor(0.3077),
+'atom_rmsd': tensor(0.7415), 'total_acc': tensor(0.5643), 'interface_acc': tensor(0.5972),
+'clashscore': 22.67}
 ```
 
 ``` bash
-python src/eval_diffusion.py --input data/6ere.pdb \
+python src/eval_diffusion.py --input data/T1124_lig.pdb \
                              --outdir temp \
                              --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \
                              --device cuda \
                              --use_proximal
 
 # Output
-{'chi_0_ae_rad': tensor(0.2622), 'chi_0_ae_deg': tensor(15.0255), 'chi_0_acc': tensor(0.8071),
-'chi_1_ae_rad': tensor(0.3870), 'chi_1_ae_deg': tensor(22.1737), 'chi_1_acc': tensor(0.5287),
-'chi_2_ae_rad': tensor(0.7673), 'chi_2_ae_deg': tensor(43.9655), 'chi_2_acc': tensor(0.3967),
-'chi_3_ae_rad': tensor(0.9359), 'chi_3_ae_deg': tensor(53.6242), 'chi_3_acc': tensor(0.2222),
-'atom_rmsd': tensor(0.9315), 'total_acc': tensor(0.4887), 'interface_acc': tensor(0.5389),
-'clashscore': 14.86}
+{'chi_0_ae_rad': tensor(0.2109), 'chi_0_ae_deg': tensor(12.0845), 'chi_0_acc': tensor(0.8489),
+'chi_1_ae_rad': tensor(0.2688), 'chi_1_ae_deg': tensor(15.3993), 'chi_1_acc': tensor(0.6644),
+'chi_2_ae_rad': tensor(0.7988), 'chi_2_ae_deg': tensor(45.7668), 'chi_2_acc': tensor(0.3750),
+'chi_3_ae_rad': tensor(1.0023), 'chi_3_ae_deg': tensor(57.4270), 'chi_3_acc': tensor(0.2769),
+'atom_rmsd': tensor(0.7672), 'total_acc': tensor(0.5413), 'interface_acc': tensor(0.5569),
+'clashscore': 16.42}
 ```
 
 The output structure is in the outdir folder named `structure.pdb` <br>
@@ -148,7 +148,7 @@ optional arguments:
 
 - Example:
 ``` bash
-python src/eval_diffusion.py --input data/6ere.pdb \
+python src/eval_diffusion.py --input data/T1124_lig.pdb \
                              --outdir temp \
                              --molprobity_clash_loc ~/MolProbity/build/bin/molprobity.clashscore \
                              --device cuda
@@ -163,28 +163,28 @@ python src/proximal_optimize.py --input temp/structure.pdb \
 
 # Output
 ----- Starting optimize! -----
------ The input structure clashscore is 19.91 -----
------ The optimized structure clashscore is 12.03 -----
+----- The input structure clashscore is 22.22 -----
+----- The optimized structure clashscore is 13.57 -----
 ----- Finishing optimize! -----
 ```
 
 Top 5 Bad Clashes >= 0.4 (input structure)
 | chain1 | index1 | residue1 | atom1 | chain2 | index2 | residue2 | atom2 | clashscore |     
 | ------ | ------ | -------- | ----- | ------ | ------ | ---------| ----- | ---------- |  
-| A | 51 | ASP | OD1  | A | 54 | ARG | NH1 | :1.349 |  
-| D | 61 | ARG | NH1  | D | 71 | GLU | HG3 | :1.255 |   
-| B | 37 | ARG | NE   | B | 64 | ASP | OD1 | :1.172 |  
-| B | 18 | VAL | HG21 | B | 22 | TRP | CD1 | :1.117 |     
-| D | 58 | ARG | HH22 | D | 61 | ARG | NH2 | :1.115 |  
+| A | 39  | LEU | HD23 | B | 135 | TRP | CZ3  | :1.652 |  
+| A | 135 | TRP | CZ3  | B | 39  | LEU | HD23 | :1.526 |   
+| A | 135 | TRP | CZ3  | B | 39  | LEU | CD2  | :1.486 |  
+| A | 254 | TRP | CZ2  | A | 274 | GLN | OE1  | :1.442 |     
+| A | 39  | LEU | HD23 | B | 135 | TRP | CE3  | :1.376 |  
 
 Top 5 Bad Clashes >= 0.4 (optimized structure)
 | chain1 | index1 | residue1 | atom1 | chain2 | index2 | residue2 | atom2 | clashscore |     
 | ------ | ------ | -------- | ----- | ------ | ------ | ---------| ----- | ---------- |  
-| B | 128 | ILE | O     | B | 129 | ASP | HB2  | :0.960 |
-| A | 42  | LEU | HD21  | A | 60  | GLU | HG3  | :0.858 |
-| B | 18  | VAL | HG12  | B | 37  | ARG | HH22 | :0.838 |
-| B | 97  | THR | HG21  | C | 35  | ILE | HD11 | :0.793 |
-| B | 11  | ALA | O     | B | 43  | ARG | O    | :0.793 |
+| B | 42  | PRO | CD   | B | 42  | PRO | N    | :1.388 |
+| A | 42  | PRO | CD   | A | 42  | PRO | N    | :1.302 |
+| A | 135 | TRP | CZ3  | B | 39  | LEU | HD23 | :1.206 |
+| A | 39  | LEU | HD23 | B | 135 | TRP | CZ3  | :1.188 |
+| A | 254 | TRP | CZ3  | A | 282 | LEU | HG   | :1.129 |
 
 
 ### Prediction of mutation effect on binding affinity (PackPPI-AP)
@@ -225,7 +225,7 @@ python src/eval_affinity.py --input data/2FTL.pdb \
                             --device cuda
 
 # Output
------ The predicted binding affinity change (wildtype-mutant) is 13.1932 kcal/mol -----
+----- The predicted binding affinity change (wildtype-mutant) is 13.0717 kcal/mol -----
 ```
 
 - Example (Multi mutations):
@@ -235,7 +235,7 @@ python src/eval_affinity.py --input data/1BRS.pdb \
                             --device cuda
 
 # Output
------ The predicted binding affinity change (wildtype-mutant) is 8.2439 kcal/mol -----
+----- The predicted binding affinity change (wildtype-mutant) is 4.8498 kcal/mol -----
 ```
 
 
