@@ -238,7 +238,19 @@ python src/eval_affinity.py --input data/1BRS.pdb \
 ----- The predicted binding affinity change (wildtype-mutant) is 4.8498 kcal/mol -----
 ```
 
-
+## Reference
+```bibtex
+@article{zhang2025packppi,
+  title     = {PackPPI: An integrated framework for protein--protein complex side-chain packing and $\Delta$$\Delta$ G prediction based on diffusion model},
+  author    = {Zhang, Jingkai and Xiong, Yuanyan},
+  journal   = {Protein Science},
+  volume    = {34},
+  number    = {5},
+  pages     = {e70110},
+  year      = {2025},
+  publisher = {Wiley Online Library}
+}
+```
 
 
 
